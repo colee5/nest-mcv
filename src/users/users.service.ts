@@ -16,10 +16,31 @@ export class UsersService {
     const user = this.repo.create({ email, password });
     return this.repo.save(user);
   }
-  async remove(id: string) {
-    const user = await this.repo.findOne({
-      where: { id: Number(id) },
-    });
+
+  findOne(id: number) {
+    return this.repo.findOneBy({ id });
+  }
+
+  find(email: string) {
+    return this.repo.find({ where: { email } });
+  }
+
+  async update(id: number, attrs: Partial<User>) {
+    const user = await this.findOne(id);
+
+    if (!user) {
+      throw new NotFoundException(`User with id: ${id} is not found`);
+    }
+
+    // Object.assign copies properties from attrs into the
+    // user object, updating any matching properties
+
+    Object.assign(user, attrs);
+    return this.repo.save(user);
+  }
+
+  async remove(id: number) {
+    const user = await this.findOne(id);
 
     if (!user) {
       throw new NotFoundException(`User with id: ${id} is not found`);
@@ -28,11 +49,3 @@ export class UsersService {
     return this.repo.remove(user);
   }
 }
-
-// findOne(id: number) {
-//   return this.repo.findOneBy({ id });
-// }
-
-// find(email: string) {
-//   return this.repo.find({ where: { email } });
-// }
