@@ -16,3 +16,12 @@ DELETE http://localhost:3000/auth/6
 ### Find all users with a given email
 GET http://localhost:3000/auth/?email=coletoo122@gmail.com
 
+### Update a user
+PATCH http://localhost:3000/auth/8
+Content-Type: application/json
+
+{
+    "email": "coletoo12221424124@gmail.com",
+    "password": "ssssss"
+} 
+
