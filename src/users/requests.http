@@ -6,3 +6,6 @@ Content-Type: application/json
     "email": "coletoo122@gmail.com",
     "password": "afafasf21fsa"
 } 
+
+### Delete an existing user
+DELETE http://localhost:3000/auth/3
