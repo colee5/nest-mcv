@@ -8,16 +8,12 @@ import {
   Patch,
   Post,
   Query,
-  UseInterceptors,
 } from '@nestjs/common';
-import {
-  Serialize,
-  SerializeInterceptor,
-} from 'src/interceptors/serialize.interceptor';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import { UsersService } from './users.service';
 import { UserDto } from './dtos/user.dto';
+import { UsersService } from './users.service';
 
 // 1. POST /auth/signup -> Create a new user
 // 2. GET /auth/:id/ -> Find a user with given id
@@ -25,6 +21,7 @@ import { UserDto } from './dtos/user.dto';
 // 4. PATCH /auth/:id -> Update a user with given ID
 // 5. DELETE /auth/:id -> Delete a user with given ID
 
+@Serialize(UserDto)
 @Controller('auth')
 export class UsersController {
   constructor(private usersService: UsersService) {}
@@ -37,7 +34,6 @@ export class UsersController {
   // Which transforms our entity into JSON before sending it as a response, respecting
   // The decorators, @Exlude only won't work without this.
 
-  @Serialize(UserDto) // Custom decorator
   @Get('/:id')
   async findUser(@Param('id') id: string) {
     const user = await this.usersService.findOne(parseInt(id));
