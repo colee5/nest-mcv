@@ -8,10 +8,13 @@ import {
   Patch,
   Post,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
+import { SerializeInterceptor } from 'src/interceptors/serialize.interceptor';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UsersService } from './users.service';
+import { UserDto } from './dtos/user.dto';
 
 // 1. POST /auth/signup -> Create a new user
 // 2. GET /auth/:id/ -> Find a user with given id
@@ -27,6 +30,11 @@ export class UsersController {
     return this.usersService.create(body.email, body.password);
   }
 
+  // This is actually what performs the serialization process, it's a mechanism
+  // Which transforms our entity into JSON before sending it as a response, respecting
+  // The decorators, @Exlude only won't work without this.
+
+  @UseInterceptors(new SerializeInterceptor(UserDto))
   @Get('/:id')
   async findUser(@Param('id') id: string) {
     const user = await this.usersService.findOne(parseInt(id));
