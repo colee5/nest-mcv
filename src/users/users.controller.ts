@@ -16,15 +16,17 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserDto } from './dtos/user.dto';
 import { UsersService } from './users.service';
+import { CurrentUser } from './decorators/current-user.decorator';
+import { User } from './user.entity';
 
 // 1. POST /auth/signup -> Create a new user
-// 1. POST /auth/signin -> Create a new user
-// 1. POST /auth/signout -> Sign out a user
-// 1. POST /auth/me -> Return a user's object
-// 2. GET /auth/:id/ -> Find a user with given id
-// 3. GET /auth?email-... -> Find all users with given email
-// 4. PATCH /auth/:id -> Update a user with given ID
-// 5. DELETE /auth/:id -> Delete a user with given ID
+// 2. POST /auth/signin -> Create a new user
+// 3. POST /auth/signout -> Sign out a user
+// 4. POST /auth/me -> Return a user's object
+// 5. GET /auth/:id/ -> Find a user with given id
+// 6. GET /auth?email-... -> Find all users with given email
+// 7. PATCH /auth/:id -> Update a user with given ID
+// 8. DELETE /auth/:id -> Delete a user with given ID
 
 @Serialize(UserDto)
 @Controller('auth')
@@ -35,8 +37,8 @@ export class UsersController {
   ) {}
 
   @Get('/me')
-  async me(@Session() session: any) {
-    return this.usersService.findOne(session.userId);
+  async me(@CurrentUser() user: User) {
+    return user;
   }
 
   @Post('/signout')
