@@ -3,7 +3,7 @@ POST http://localhost:3000/auth/signup
 Content-Type: application/json
 
 {
-    "email": "coletoo12@gmail.com",
+    "email": "coletoos12@gmail.com",
     "password": "afafasf21fsa"
 } 
 
@@ -12,9 +12,16 @@ POST http://localhost:3000/auth/signin
 Content-Type: application/json
 
 {
-    "email": "coletoo12@gmail.com",
+    "email": "coletoos12@gmail.com",
     "password": "afafasf21fsa"
 } 
+
+### Sign Out
+POST  http://localhost:3000/auth/signout
+
+### Get the currently signed in user
+GET  http://localhost:3000/auth/me
+
 
 ### Get a user by id
 GET  http://localhost:3000/auth/9
@@ -33,4 +40,12 @@ Content-Type: application/json
     "email": "coletoo12221424124@gmail.com",
     "password": "ssssss"
 } 
+
+
+
+# ### Set a color
+# GET  http://localhost:3000/auth/colors/red
+
+# ### Get the color
+# GET  http://localhost:3000/auth/colors
 

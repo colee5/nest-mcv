@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Query,
+  Session,
 } from '@nestjs/common';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { AuthService } from './auth.service';
@@ -18,6 +19,8 @@ import { UsersService } from './users.service';
 
 // 1. POST /auth/signup -> Create a new user
 // 1. POST /auth/signin -> Create a new user
+// 1. POST /auth/signout -> Sign out a user
+// 1. POST /auth/me -> Return a user's object
 // 2. GET /auth/:id/ -> Find a user with given id
 // 3. GET /auth?email-... -> Find all users with given email
 // 4. PATCH /auth/:id -> Update a user with given ID
@@ -31,19 +34,32 @@ export class UsersController {
     private authService: AuthService,
   ) {}
 
+  @Get('/me')
+  async me(@Session() session: any) {
+    return this.usersService.findOne(session.userId);
+  }
+
+  @Post('/signout')
+  async signOut(@Session() session: any) {
+    if (!session.userId) {
+      throw new NotFoundException(`User not found or already signed out`);
+    }
+    session.userId = null;
+  }
+
   @Post('/signup')
-  createUser(@Body() body: CreateUserDto) {
-    return this.authService.signup(body.email, body.password);
+  async createUser(@Body() body: CreateUserDto, @Session() session: any) {
+    const user = await this.authService.signup(body.email, body.password);
+    session.userId = user.id;
+    return user;
   }
 
   @Post('/signin')
-  signin(@Body() body: CreateUserDto) {
-    return this.authService.signin(body.email, body.password);
+  async signin(@Body() body: CreateUserDto, @Session() session: any) {
+    const user = await this.authService.signin(body.email, body.password);
+    session.userId = user.id;
+    return user;
   }
-
-  // This is actually what performs the serialization process, it's a mechanism
-  // Which transforms our entity into JSON before sending it as a response, respecting
-  // The decorators, @Exlude only won't work without this.
 
   @Get('/:id')
   async findUser(@Param('id') id: string) {
@@ -68,4 +84,14 @@ export class UsersController {
   removeUser(@Param('id') id: string) {
     return this.usersService.remove(parseInt(id));
   }
+
+  // @Get('colors/:color')
+  // setColor(@Param('color') color: string, @Session() session: any) {
+  //   session.color = color;
+  // }
+
+  // @Get('/colors')
+  // getColor(@Session() session: any) {
+  //   return session.color;
+  // }
 }

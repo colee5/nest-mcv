@@ -18,6 +18,12 @@ export class UsersService {
   }
 
   findOne(id: number) {
+    // If we don't have the if check, the findOneBy
+    // defaults to the first user if the id is null..
+    if (!id) {
+      return null;
+    }
+
     return this.repo.findOneBy({ id });
   }
 
