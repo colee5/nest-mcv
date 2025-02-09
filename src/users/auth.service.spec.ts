@@ -4,17 +4,20 @@ import { AuthService } from './auth.service';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
 
-// describe only applies a name on top of the console when a
-// test is run, so we differentiate between services
+// describe only applies a name on top of the console
+// when a test is run, so we differentiate between services
+
 describe('AuthService', () => {
   let service: AuthService;
   let fakeUsersService: Partial<UsersService>;
 
   beforeEach(async () => {
     const users: User[] = [];
+
     // Create fake copy of the UsersService
     // We declare some of the methods which the UsersService
     // - those which are used in the authService
+
     fakeUsersService = {
       find: (email: string) => {
         const filteredUsers = users.filter((user) => user.email === email);
@@ -58,8 +61,7 @@ describe('AuthService', () => {
   });
 
   it('throws an error if user signs up with email that is in use', async () => {
-    fakeUsersService.find = () =>
-      Promise.resolve([{ id: 1, email: 'a', password: '1' } as User]);
+    await service.signup('asdf@asdf.com', 'asdf');
     await expect(service.signup('asdf@asdf.com', 'asdf')).rejects.toThrow(
       BadRequestException,
     );
@@ -72,12 +74,9 @@ describe('AuthService', () => {
   });
 
   it('throws if an invalid password is provided', async () => {
-    fakeUsersService.find = () =>
-      Promise.resolve([
-        { email: 'asdf@asdf.com', password: 'laskdjf' } as User,
-      ]);
+    await service.signup('asdf@asdf.com', 'laskdjf');
 
-    await expect(service.signin('asdf@asdf.com', 'password')).rejects.toThrow(
+    await expect(service.signin('asdf@asdf.com', 'laskdjf1')).rejects.toThrow(
       BadRequestException,
     );
   });
