@@ -37,6 +37,7 @@ lerna-debug.log*
 
 
 /db.sqlite
+/test.sqlite
 
 # dotenv environment variable files
 .env
