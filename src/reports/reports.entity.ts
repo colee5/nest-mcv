@@ -26,5 +26,5 @@ export class Report {
 
   // Relation - causes changes to the db
   @ManyToOne(() => User, (user) => user.reports)
-  ownerId: User;
+  owner: User;
 }

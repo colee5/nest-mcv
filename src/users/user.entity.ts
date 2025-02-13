@@ -18,7 +18,9 @@ export class User {
   @Column()
   password: string;
 
-  @OneToMany(() => Report, (report) => report.ownerId)
+  // The function resolves the problem of the report/user being not
+  // yet defined, and avoiding circular dependency issue
+  @OneToMany(() => Report, (report) => report.owner)
   reports: Report[];
 
   // Logs

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/users/user.entity';
 import { Repository } from 'typeorm';
 import { CreateReportDto } from './dtos/create-report.dto';
 import { Report } from './reports.entity';
@@ -8,8 +9,13 @@ import { Report } from './reports.entity';
 export class ReportsService {
   constructor(@InjectRepository(Report) private repo: Repository<Report>) {}
 
-  create(reportDto: CreateReportDto) {
+  create(reportDto: CreateReportDto, user: User) {
     const report = this.repo.create(reportDto);
+
+    // Assigning the incoming user from the header as the
+    // owned for the report which is being created
+    report.owner = user;
+
     return this.repo.save(report);
   }
 }
