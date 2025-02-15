@@ -1,11 +1,10 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthService } from './auth.service';
+import { CurrentUserMiddleware } from './middlewares/current-user.middleware';
 import { User } from './user.entity';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { CurrentUserInterceptor } from './interceptors/current-user.interceptor';
-import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   // This is what creates the repository for us
@@ -16,7 +15,11 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
     AuthService,
     // Globally scoped interceptor - so we don't manually add it into every controller
     // This can impact performance if we decide to add alot of them/
-    { provide: APP_INTERCEPTOR, useClass: CurrentUserInterceptor },
+    // { provide: APP_INTERCEPTOR, useClass: CurrentUserInterceptor },
   ],
 })
-export class UsersModule {}
+export class UsersModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(CurrentUserMiddleware).forRoutes('*');
+  }
+}

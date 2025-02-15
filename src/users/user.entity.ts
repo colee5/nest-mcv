@@ -13,10 +13,15 @@ import {
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
+
   @Column()
   email: string;
+
   @Column()
   password: string;
+
+  @Column({ default: true }) // todo: fix
+  admin: boolean;
 
   // The function resolves the problem of the report/user being not
   // yet defined, and avoiding circular dependency issue

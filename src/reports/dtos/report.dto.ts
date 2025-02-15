@@ -4,16 +4,25 @@ import { User } from 'src/users/user.entity';
 export class ReportDto {
   @Expose()
   id: number;
+
+  @Expose()
+  approved: boolean;
+
   @Expose()
   price: number;
+
   @Expose()
   year: number;
+
   @Expose()
-  coordinates: { lat: number; lng: number };
+  lng: number;
+
   @Expose()
-  make: string;
+  lat: number;
+
   @Expose()
   model: string;
+
   @Expose()
   mileage: number;
 

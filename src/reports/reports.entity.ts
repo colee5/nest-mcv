@@ -6,6 +6,9 @@ export class Report {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ default: false })
+  approved: boolean;
+
   @Column()
   price: number;
 
@@ -18,8 +21,11 @@ export class Report {
   @Column()
   year: number;
 
-  @Column('simple-json')
-  coordinates: { lat: number; lng: number };
+  @Column()
+  lat: number;
+
+  @Column()
+  lng: number;
 
   @Column()
   mileage: number;
