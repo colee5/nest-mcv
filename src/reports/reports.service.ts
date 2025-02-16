@@ -39,17 +39,26 @@ export class ReportsService {
     year,
     mileage,
   }: GetEstimateDto) {
-    return this.repo
+    const estimate = await this.repo
       .createQueryBuilder()
       .select('AVG(price)', 'price')
       .where('brand = :brand', { brand })
       .andWhere('model = :model', { model })
       .andWhere(':lng - lng BETWEEN -5 AND 5', { lng })
       .andWhere(':lat - lat BETWEEN -5 AND 5', { lat })
+      .andWhere('approved IS TRUE')
       .andWhere(':year - year BETWEEN -3 AND 3', { year })
       .orderBy('ABS(mileage - :mileage)', 'DESC')
       .setParameters({ mileage })
       .limit(3)
       .getRawOne();
+
+    if (!estimate || estimate.price === null) {
+      throw new NotFoundException(
+        'No approved matches found for this vehicle criteria',
+      );
+    }
+
+    return estimate;
   }
 }

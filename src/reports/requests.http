@@ -9,7 +9,7 @@ Content-Type: application/json
     "mileage": 50000,
     "lat": 45,
     "lng": 45,
-    "price": 10000
+    "price": 20000
 } 
 
 ### Approve a report
