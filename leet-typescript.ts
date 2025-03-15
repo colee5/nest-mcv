@@ -125,3 +125,229 @@ function reverseList(head: ListNode | null): ListNode | null {
   }
   return previous;
 }
+
+//
+
+function mergeTwoLists(
+  list1: ListNode | null,
+  list2: ListNode | null,
+): ListNode | null {
+  let dummy = new ListNode(0, null);
+  let current: ListNode = dummy;
+
+  while (list1 && list2) {
+    if (list1.val <= list2.val) {
+      current.next = list1;
+      list1 = list1.next;
+    } else {
+      current.next = list2;
+      list2 = list2.next;
+    }
+    current = current.next;
+  }
+
+  if (list1) current.next = list1;
+  if (list2) current.next = list2;
+
+  return dummy.next;
+}
+
+//
+
+class DoublyLinkedList {
+  val: number;
+  next: DoublyLinkedList | null;
+  prev: DoublyLinkedList | null;
+  constructor(
+    val?: number,
+    next?: DoublyLinkedList | null,
+    prev?: DoublyLinkedList,
+  ) {
+    this.val = val === undefined ? 0 : val;
+    this.next = next === undefined ? null : next;
+    this.prev = prev === undefined ? null : prev;
+  }
+}
+
+class DoublyListNode {
+  val: number;
+  next: DoublyListNode | null;
+  prev: DoublyListNode | null;
+
+  constructor(val?: number) {
+    this.val = val === undefined ? 0 : val;
+    this.next = null;
+    this.prev = null;
+  }
+}
+
+// class MyLinkedList {
+//   head: DoublyListNode | null;
+//   tail: DoublyListNode | null;
+
+//   constructor() {
+//     this.head = null;
+//     this.tail = null;
+//   }
+
+//   get(index: number): number {
+//     if (index < 0 || this.head === null) {
+//       return -1;
+//     }
+
+//     let curr = this.head;
+//     let i = 0;
+
+//     while (curr) {
+//       if (i === index) {
+//         return curr.val;
+//       }
+
+//       i++;
+//       curr = curr.next;
+//     }
+//     return -1;
+//   }
+
+//   addAtHead(val: number): void {
+//     const newNode = new DoublyListNode(val);
+
+//     if (this.head === null) {
+//       this.head = newNode;
+//       this.tail = newNode;
+//     } else {
+//       newNode.next = this.head;
+//       this.head.prev = newNode;
+//       this.head = newNode;
+//     }
+//   }
+
+//   addAtTail(val: number): void {
+//     const newNode = new DoublyListNode(val);
+//     if (this.tail === null) {
+//       this.head = newNode;
+//       this.tail = newNode;
+//     } else {
+//       this.tail.next = newNode;
+//       newNode.prev = this.tail;
+//       this.tail = newNode;
+//     }
+//   }
+
+//   addAtIndex(index: number, val: number): void {
+//     if (index < 0) {
+//       return;
+//     }
+
+//     if (index === 0) {
+//       this.addAtHead(val);
+//       return;
+//     }
+
+//     const newNode = new DoublyListNode(val);
+//     let currentAtIndex = this.head;
+
+//     if (currentAtIndex === null) {
+//       return;
+//     }
+
+//     for (let i = 0; i < index; i++) {
+//       if (currentAtIndex === null) {
+//         return;
+//       }
+//       currentAtIndex = currentAtIndex.next;
+//     }
+
+//     if (currentAtIndex === null) {
+//       this.addAtTail(val);
+//       return;
+//     }
+
+//     newNode.next = currentAtIndex;
+//     newNode.prev = currentAtIndex.prev;
+//     currentAtIndex.prev.next = newNode;
+//     currentAtIndex.prev = newNode;
+//   }
+
+//   deleteAtIndex(index: number): void {
+//     if (index < 0 || this.head === null) {
+//       return;
+//     }
+
+//     if (index === 0) {
+//       this.head = this.head.next;
+//       if (this.head) {
+//         this.head.prev = null;
+//       } else {
+//         this.tail = null;
+//       }
+//       return;
+//     }
+
+//     let currentAtIndex = this.head;
+//     for (let i = 0; i < index; i++) {
+//       if (currentAtIndex === null) {
+//         return;
+//       }
+//       currentAtIndex = currentAtIndex.next;
+//     }
+
+//     if (currentAtIndex === null) {
+//       return;
+//     }
+
+//     if (currentAtIndex === this.tail) {
+//       this.tail = currentAtIndex.prev;
+//       if (this.tail) {
+//         this.tail.next = null;
+//       } else {
+//         this.head = null;
+//       }
+//       return;
+//     }
+
+//     currentAtIndex.prev.next = currentAtIndex.next;
+//     currentAtIndex.next.prev = currentAtIndex.prev;
+//   }
+// }
+
+const countStudents = (students: number[], sandwiches: number[]): number => {
+  let remainingStudents = students.length;
+  let queue: number[] = [];
+
+  for (let student of students) {
+    queue.push(student);
+  }
+
+  for (let sandwich of sandwiches) {
+    let studentsChecked = 0;
+
+    while (studentsChecked < queue.length && queue[0] !== sandwich) {
+      let student = queue.shift()!;
+      queue.push(student);
+      studentsChecked++;
+    }
+
+    if (queue[0] === sandwich) {
+      queue.shift();
+      remainingStudents--;
+    } else {
+      break;
+    }
+  }
+
+  return remainingStudents;
+};
+
+const climbStairs = (n: number) => {
+  let one = 1;
+  let two = 1;
+
+  for (let i = 0; i < n - 1; i++) {
+    let temporary = one;
+    one = one + two;
+    two = temporary;
+  }
+
+  return one;
+};
