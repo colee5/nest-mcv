@@ -351,3 +351,32 @@ const climbStairs = (n: number) => {
 
   return one;
 };
+
+function insertionSort(arr: number[]) {
+  for (let i = 1; i < arr.length; i++) {
+    let j = i - 1;
+
+    while (j >= 0 && arr[j + 1] < arr[j]) {
+      let tmp = arr[j + 1];
+      arr[j + 1] = arr[j];
+      arr[j] = tmp;
+      j--;
+    }
+  }
+}
+
+function sortColors(nums: number[]): void {
+  const counts = new Int32Array(3);
+
+  for (let i = 0; i < nums.length; i++) {
+    counts[nums[i]] += 1;
+  }
+
+  let i = 0;
+  for (let n = 0; n < counts.length; n++) {
+    for (let j = 0; j < counts[n]; j++) {
+      nums[i] = n;
+      i++;
+    }
+  }
+}
