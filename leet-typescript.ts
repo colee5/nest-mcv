@@ -380,3 +380,50 @@ function sortColors(nums: number[]): void {
     }
   }
 }
+
+function rotateArray(nums: number[], k: number): number[] {
+  if (nums.length === 0) return nums;
+
+  k = k % nums.length;
+  if (k === 0) return nums;
+
+  const result = [...nums];
+
+  reverse(result, 0, result.length - 1);
+  reverse(result, 0, k - 1);
+  reverse(result, k, result.length - 1);
+
+  return result;
+}
+
+function reverse(arr: number[], start: number, end: number): void {
+  while (start < end) {
+    const temp = arr[start];
+    arr[start] = arr[end];
+    arr[end] = temp;
+    start++;
+    end--;
+  }
+}
+
+function lengthOfLongestSubstring(s: string): number {
+  if (s.length === 0) return 0;
+
+  let maxLength = 0;
+  let left = 0;
+  const charMap = new Map<string, number>();
+
+  for (let right = 0; right < s.length; right++) {
+    const currentChar = s[right];
+
+    if (charMap.has(currentChar) && charMap.get(currentChar)! >= left) {
+      left = charMap.get(currentChar)! + 1;
+    }
+
+    maxLength = Math.max(maxLength, right - left + 1);
+
+    charMap.set(currentChar, right);
+  }
+
+  return maxLength;
+}
