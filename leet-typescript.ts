@@ -169,6 +169,8 @@ class DoublyLinkedList {
   }
 }
 
+//
+
 class DoublyListNode {
   val: number;
   next: DoublyListNode | null;
@@ -181,135 +183,149 @@ class DoublyListNode {
   }
 }
 
-// class MyLinkedList {
-//   head: DoublyListNode | null;
-//   tail: DoublyListNode | null;
+//
 
-//   constructor() {
-//     this.head = null;
-//     this.tail = null;
-//   }
+class MyLinkedList {
+  head: DoublyListNode | null;
+  tail: DoublyListNode | null;
 
-//   get(index: number): number {
-//     if (index < 0 || this.head === null) {
-//       return -1;
-//     }
+  constructor() {
+    this.head = null;
+    this.tail = null;
+  }
 
-//     let curr = this.head;
-//     let i = 0;
+  get(index: number): number {
+    if (index < 0 || this.head === null) {
+      return -1;
+    }
 
-//     while (curr) {
-//       if (i === index) {
-//         return curr.val;
-//       }
+    let curr = this.head;
+    let i = 0;
 
-//       i++;
-//       curr = curr.next;
-//     }
-//     return -1;
-//   }
+    while (curr) {
+      if (i === index) {
+        return curr.val;
+      }
 
-//   addAtHead(val: number): void {
-//     const newNode = new DoublyListNode(val);
+      i++;
 
-//     if (this.head === null) {
-//       this.head = newNode;
-//       this.tail = newNode;
-//     } else {
-//       newNode.next = this.head;
-//       this.head.prev = newNode;
-//       this.head = newNode;
-//     }
-//   }
+      if (curr.next) {
+        curr = curr.next;
+      }
+    }
+    return -1;
+  }
 
-//   addAtTail(val: number): void {
-//     const newNode = new DoublyListNode(val);
-//     if (this.tail === null) {
-//       this.head = newNode;
-//       this.tail = newNode;
-//     } else {
-//       this.tail.next = newNode;
-//       newNode.prev = this.tail;
-//       this.tail = newNode;
-//     }
-//   }
+  addAtHead(val: number): void {
+    const newNode = new DoublyListNode(val);
 
-//   addAtIndex(index: number, val: number): void {
-//     if (index < 0) {
-//       return;
-//     }
+    if (this.head === null) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      newNode.next = this.head;
+      this.head.prev = newNode;
+      this.head = newNode;
+    }
+  }
 
-//     if (index === 0) {
-//       this.addAtHead(val);
-//       return;
-//     }
+  addAtTail(val: number): void {
+    const newNode = new DoublyListNode(val);
+    if (this.tail === null) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      newNode.prev = this.tail;
+      this.tail = newNode;
+    }
+  }
 
-//     const newNode = new DoublyListNode(val);
-//     let currentAtIndex = this.head;
+  addAtIndex(index: number, val: number): void {
+    if (index < 0) {
+      return;
+    }
 
-//     if (currentAtIndex === null) {
-//       return;
-//     }
+    if (index === 0) {
+      this.addAtHead(val);
+      return;
+    }
 
-//     for (let i = 0; i < index; i++) {
-//       if (currentAtIndex === null) {
-//         return;
-//       }
-//       currentAtIndex = currentAtIndex.next;
-//     }
+    const newNode = new DoublyListNode(val);
+    let currentAtIndex = this.head;
 
-//     if (currentAtIndex === null) {
-//       this.addAtTail(val);
-//       return;
-//     }
+    if (currentAtIndex === null) {
+      return;
+    }
 
-//     newNode.next = currentAtIndex;
-//     newNode.prev = currentAtIndex.prev;
-//     currentAtIndex.prev.next = newNode;
-//     currentAtIndex.prev = newNode;
-//   }
+    for (let i = 0; i < index; i++) {
+      if (currentAtIndex === null) {
+        return;
+      }
+      currentAtIndex = currentAtIndex.next;
+    }
 
-//   deleteAtIndex(index: number): void {
-//     if (index < 0 || this.head === null) {
-//       return;
-//     }
+    if (currentAtIndex === null) {
+      this.addAtTail(val);
+      return;
+    }
 
-//     if (index === 0) {
-//       this.head = this.head.next;
-//       if (this.head) {
-//         this.head.prev = null;
-//       } else {
-//         this.tail = null;
-//       }
-//       return;
-//     }
+    newNode.next = currentAtIndex;
+    newNode.prev = currentAtIndex.prev;
+    if (currentAtIndex.prev) {
+      currentAtIndex.prev.next = newNode;
+    }
 
-//     let currentAtIndex = this.head;
-//     for (let i = 0; i < index; i++) {
-//       if (currentAtIndex === null) {
-//         return;
-//       }
-//       currentAtIndex = currentAtIndex.next;
-//     }
+    currentAtIndex.prev = newNode;
+  }
 
-//     if (currentAtIndex === null) {
-//       return;
-//     }
+  deleteAtIndex(index: number): void {
+    if (index < 0 || this.head === null) {
+      return;
+    }
 
-//     if (currentAtIndex === this.tail) {
-//       this.tail = currentAtIndex.prev;
-//       if (this.tail) {
-//         this.tail.next = null;
-//       } else {
-//         this.head = null;
-//       }
-//       return;
-//     }
+    if (index === 0) {
+      this.head = this.head.next;
+      if (this.head) {
+        this.head.prev = null;
+      } else {
+        this.tail = null;
+      }
+      return;
+    }
 
-//     currentAtIndex.prev.next = currentAtIndex.next;
-//     currentAtIndex.next.prev = currentAtIndex.prev;
-//   }
-// }
+    let currentAtIndex = this.head;
+    for (let i = 0; i < index; i++) {
+      if (currentAtIndex === null) {
+        return;
+      }
+      if (currentAtIndex.next) {
+        currentAtIndex = currentAtIndex.next;
+      }
+    }
+
+    if (currentAtIndex === null) {
+      return;
+    }
+
+    if (currentAtIndex === this.tail) {
+      this.tail = currentAtIndex.prev;
+      if (this.tail) {
+        this.tail.next = null;
+      } else {
+        this.head = null;
+      }
+      return;
+    }
+
+    if (currentAtIndex.next && currentAtIndex.prev) {
+      currentAtIndex.prev.next = currentAtIndex.next;
+      currentAtIndex.next.prev = currentAtIndex.prev;
+    }
+  }
+}
+
+//
 
 const countStudents = (students: number[], sandwiches: number[]): number => {
   let remainingStudents = students.length;
@@ -339,6 +355,8 @@ const countStudents = (students: number[], sandwiches: number[]): number => {
   return remainingStudents;
 };
 
+//
+
 const climbStairs = (n: number) => {
   let one = 1;
   let two = 1;
@@ -352,6 +370,8 @@ const climbStairs = (n: number) => {
   return one;
 };
 
+//
+
 function insertionSort(arr: number[]) {
   for (let i = 1; i < arr.length; i++) {
     let j = i - 1;
@@ -364,6 +384,8 @@ function insertionSort(arr: number[]) {
     }
   }
 }
+
+//
 
 function sortColors(nums: number[]): void {
   const counts = new Int32Array(3);
@@ -381,6 +403,8 @@ function sortColors(nums: number[]): void {
   }
 }
 
+//
+
 function rotateArray(nums: number[], k: number): number[] {
   if (nums.length === 0) return nums;
 
@@ -396,6 +420,8 @@ function rotateArray(nums: number[], k: number): number[] {
   return result;
 }
 
+//
+
 function reverse(arr: number[], start: number, end: number): void {
   while (start < end) {
     const temp = arr[start];
@@ -405,6 +431,8 @@ function reverse(arr: number[], start: number, end: number): void {
     end--;
   }
 }
+
+//
 
 function lengthOfLongestSubstring(s: string): number {
   if (s.length === 0) return 0;
@@ -426,4 +454,411 @@ function lengthOfLongestSubstring(s: string): number {
   }
 
   return maxLength;
+}
+
+//
+
+function searchMatrix(matrix: number[][], target: number): boolean {
+  const arr: number[] = matrix.flat();
+  let L: number = 0;
+  let R: number = arr.length - 1;
+
+  while (L <= R) {
+    let mid: number = Math.floor((L + R) / 2);
+
+    if (target > arr[mid]) {
+      L = mid + 1;
+    } else if (target < arr[mid]) {
+      R = mid - 1;
+    } else {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+//
+
+function guessNumber(n: number): number {
+  let left = 1;
+  let right = n;
+
+  while (left <= right) {
+    let mid = Math.floor((left + right) / 2);
+    let result = guess(mid);
+
+    if (result === 0) {
+      return mid;
+    } else if (result === -1) {
+      right = mid + 1;
+    } else {
+      left = mid - 1;
+    }
+  }
+  return -1;
+}
+
+function guess(num: number): number {
+  return -1;
+}
+
+//
+
+function isBadVersion(num: number): number {
+  return -1;
+}
+
+//
+
+function firstBadVersion(n: number): number {
+  let l = 1,
+    r = n,
+    res = -1;
+  while (l <= r) {
+    const m = Math.floor(l + (r - l) / 2);
+    if (isBadVersion(m)) {
+      res = m;
+      r = m - 1;
+    } else {
+      l = m + 1;
+    }
+  }
+  return res;
+}
+
+//
+
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
+
+  constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
+    this.val = val === undefined ? 0 : val;
+    this.left = left === undefined ? null : left;
+    this.right = right === undefined ? null : right;
+  }
+}
+
+//
+
+function searchBST(root: TreeNode | null, val: number): TreeNode | null {
+  if (root === null) {
+    return null;
+  }
+
+  if (val > root.val) {
+    return searchBST(root.right, val);
+  } else if (val < root.val) {
+    return searchBST(root.left, val);
+  } else {
+    return root;
+  }
+}
+
+//
+
+function minValueNode(root: TreeNode) {
+  let curr = root;
+  while (curr !== null && curr.left !== null) {
+    curr = curr.left;
+  }
+  return curr;
+}
+
+//
+
+function insertIntoBST(root: TreeNode | null, val: number): TreeNode | null {
+  if (!root) {
+    return new TreeNode(val);
+  }
+
+  if (val > root.val) {
+    root.right = insertIntoBST(root.right, val);
+  } else if (val < root.val) {
+    root.left = insertIntoBST(root.left, val);
+  }
+
+  return root;
+}
+
+//
+
+function remove(root: TreeNode | null, val: number): TreeNode | null {
+  if (root === null) {
+    return null;
+  }
+
+  if (val > root.val) {
+    root.right = remove(root.right, val);
+  } else if (val < root.val) {
+    root.left = remove(root.left, val);
+  } else {
+    if (root.left === null) {
+      return root.right;
+    } else if (root.right === null) {
+      return root.left;
+    } else {
+      let minNode = minValueNode(root.right);
+      root.val = minNode.val;
+      root.right = remove(root.right, minNode.val);
+    }
+  }
+
+  return root;
+}
+
+//
+
+function inorder(root: TreeNode | null) {
+  if (root == null) {
+    return;
+  }
+
+  inorder(root.left);
+  console.log(root.val);
+  inorder(root.right);
+}
+
+//
+
+function inorderTraversal(root: TreeNode | null) {
+  const res: number[] = [];
+
+  const inorder = (node: TreeNode | null) => {
+    if (!node) return;
+    inorder(node.left);
+    res.push(node.val);
+    inorder(node.right);
+  };
+
+  inorder(root);
+  return res;
+}
+
+//
+
+function bfs(root: TreeNode | null): void {
+  let queue: TreeNode[] = [];
+
+  if (root !== null) {
+    queue.push(root);
+  }
+
+  let level = 0;
+
+  while (queue.length > 0) {
+    console.log('level' + level + ': ');
+    let levelLength = queue.length;
+
+    for (let i = 0; i < levelLength; i++) {
+      let curr = queue.shift()!;
+      console.log(curr.val + '');
+
+      if (curr.left !== null) {
+        queue.push(curr.left);
+      }
+
+      if (curr.right !== null) {
+        queue.push(curr.right);
+      }
+    }
+
+    level++;
+    console.log();
+  }
+}
+
+// Same as above just return an output: [[1,2], [4,5], [5,6]]
+
+function levelOrder(root: TreeNode | null) {
+  let queue: TreeNode[] = [];
+
+  if (root !== null) {
+    queue.push(root);
+  }
+
+  let finalArray: number[][] = [];
+
+  while (queue.length > 0) {
+    let levelLength = queue.length;
+    let currentLevel: number[] = [];
+
+    for (let i = 0; i < levelLength; i++) {
+      let curr = queue.shift()!;
+      currentLevel.push(curr.val);
+
+      if (curr.left !== null) {
+        queue.push(curr.left);
+      }
+
+      if (curr.right !== null) {
+        queue.push(curr.right);
+      }
+    }
+    finalArray.push(currentLevel);
+  }
+
+  return finalArray;
+}
+
+function rightSideView(root: TreeNode) {
+  let queue: TreeNode[] = [];
+
+  if (root !== null) {
+    queue.push(root);
+  }
+
+  let finalArray: number[] = [];
+  while (queue.length > 0) {
+    let levelLength = queue.length;
+
+    for (let i = 0; i < levelLength; i++) {
+      let curr = queue.shift();
+      if (curr) {
+        finalArray.push(curr.val);
+      }
+
+      if (curr && curr.right !== null) {
+        queue.push(curr.right);
+      }
+    }
+  }
+}
+
+// Implementation of a tree using a map, difference is the "key"
+
+class TreeMap {
+  key: number;
+  val: number;
+  left: TreeMap | null;
+  right: TreeMap | null;
+
+  constructor(key: number, value: number) {
+    this.key = key;
+    this.val = value;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+class TreeMapClass {
+  root: TreeMap | null;
+
+  constructor() {
+    this.root = null;
+  }
+
+  insert(key: number, val: number): void {
+    let newNode = new TreeMap(key, val);
+    if (this.root == null) {
+      this.root = newNode;
+      return;
+    }
+
+    let curr = this.root;
+    while (true) {
+      // We go left, check if left exists, if not put that newNode as the left
+      if (key < curr.key) {
+        if (!curr.left) {
+          curr.left = newNode;
+          return;
+        }
+        curr = curr.left;
+      }
+      // We go right, check if right exists, if not put that newNode as the right
+      else if (key > curr.key) {
+        if (!curr.right) {
+          curr.right = newNode;
+          return;
+        }
+        curr = curr.right;
+      } else {
+        // === key, we just replace the value
+        curr.val = val;
+        return;
+      }
+    }
+  }
+
+  get(key: number): number {
+    let curr = this.root;
+    while (curr !== null) {
+      if (key < curr.key) {
+        curr = curr.left;
+      } else if (key > curr.key) {
+        curr = curr.right;
+      } else {
+        return curr.val;
+      }
+    }
+    return -1;
+  }
+
+  getMin(): number {
+    let curr = this.findMin(this.root);
+    return curr !== null ? curr.val : -1;
+  }
+
+  getMax(): number {
+    let curr = this.root;
+    while (curr !== null && curr.right !== null) {
+      curr = curr.right;
+    }
+    return curr !== null ? curr.val : -1;
+  }
+
+  remove(key: number): void {
+    this.root = this.removeHelper(this.root, key);
+  }
+
+  // Remove the node with key, but also return the new root of the subtree after removal
+  private removeHelper(curr: TreeMap | null, key: number): TreeMap | null {
+    if (curr == null) {
+      return null;
+    }
+
+    if (key > curr.key) {
+      curr.right = this.removeHelper(curr.right, key);
+    } else if (key < curr.key) {
+      curr.left = this.removeHelper(curr.left, key);
+    } else {
+      // This is actually where we do the deletion, because we have found the one we want to remove
+      if (curr.left == null) {
+        return curr.right;
+      } else if (curr.right == null) {
+        return curr.left;
+      } else {
+        // Meaning the tree node has both left and right child
+        // Swap curr with inorder successor.
+        let minNode = this.findMin(curr.right)!;
+        curr.key = minNode.key;
+        curr.val = minNode.val;
+        curr.right = this.removeHelper(curr.right, minNode.key);
+      }
+    }
+    return curr;
+  }
+
+  private findMin(node: TreeMap | null): TreeMap | null {
+    while (node && node.left !== null) {
+      node = node.left;
+    }
+    return node;
+  }
+
+  private inorderTraversal(root: TreeMap | null, result: number[]): void {
+    if (root != null) {
+      this.inorderTraversal(root.left, result);
+      result.push(root.key);
+      this.inorderTraversal(root.right, result);
+    }
+  }
+
+  getInorderKeys(): number[] {
+    let result: number[] = [];
+    this.inorderTraversal(this.root, result);
+    return result;
+  }
 }
