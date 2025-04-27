@@ -153,6 +153,83 @@ function mergeTwoLists(
 }
 
 //
+// Designing a Singly Linked List
+
+class LinkedList {
+  head: ListNode;
+  tail: ListNode;
+
+  constructor() {
+    this.head = new ListNode(-1);
+    this.tail = this.head;
+  }
+
+  get(index: number) {
+    let curr = this.head.next;
+    let i = 0;
+
+    while (curr) {
+      if (i === index) {
+        return curr.val;
+      }
+
+      i++;
+      curr = curr.next;
+    }
+    return -1;
+  }
+
+  insertHead(val: number) {
+    const newNode = new ListNode(val);
+    newNode.next = this.head.next;
+
+    this.head.next = newNode;
+
+    if (!newNode.next) {
+      this.tail = newNode;
+    }
+  }
+
+  insertTail(val: number) {
+    this.tail.next = new ListNode(val);
+    this.tail = this.tail.next;
+  }
+
+  remove(index: number) {
+    let i = 0;
+    let curr = this.head.next;
+
+    while (curr && i < index) {
+      i++;
+      curr = curr.next;
+    }
+
+    if (curr && curr.next) {
+      if (curr.next === this.tail) {
+        this.tail = curr;
+      }
+
+      curr.next = curr.next.next;
+      return true;
+    }
+
+    return false;
+  }
+
+  getValues() {
+    let curr = this.head.next;
+    let res: number[] = [];
+
+    while (curr) {
+      res.push(curr?.val);
+      curr = curr.next;
+    }
+
+    return res;
+  }
+}
+
+//
 
 class DoublyLinkedList {
   val: number;
@@ -640,16 +717,23 @@ function inorderTraversal(root: TreeNode | null) {
 //
 
 function bfs(root: TreeNode | null): void {
+  // Initialize an empty queue to store nodes that need to be visited
+  // QUEUE - FIFO
   let queue: TreeNode[] = [];
 
+  // If the root exists, add it to the queue to begin traversal
   if (root !== null) {
     queue.push(root);
   }
 
   let level = 0;
 
+  // Continue traversal as long as there are nodes in the queue
   while (queue.length > 0) {
     console.log('level' + level + ': ');
+
+    // Store the number of nodes at the current level
+    // (important to capture this before the queue size changes)
     let levelLength = queue.length;
 
     for (let i = 0; i < levelLength; i++) {
@@ -860,5 +944,441 @@ class TreeMapClass {
     let result: number[] = [];
     this.inorderTraversal(this.root, result);
     return result;
+  }
+}
+
+//
+
+function removeDuplicatesReturnCount(nums: number[]): number {
+  if (!nums.length) return 0;
+
+  let n = nums.length;
+  let l = 0;
+  let r = 0;
+
+  while (r < n) {
+    nums[l] = nums[r];
+    while (r < n && nums[r] === nums[l]) {
+      r++;
+    }
+    l++;
+  }
+
+  return l;
+}
+
+//
+
+function twoSum(nums: number[], target: number): number[] {
+  const seen: { [key: number]: number } = {};
+
+  // Iterate through the array with index
+  for (let i = 0; i < nums.length; i++) {
+    const complement = target - nums[i];
+
+    if (complement in seen) {
+      return [seen[complement], i];
+    }
+
+    seen[nums[i]] = i;
+  }
+
+  return [];
+}
+
+//
+
+class MinHeap {
+  heap: number[];
+
+  heapify(arr: number[]) {
+    arr.push(arr[0]);
+    this.heap = arr;
+
+    let curr = Math.floor((this.heap.length - 1) / 2);
+    while (curr > 0) {
+      let i = curr;
+
+      while (2 * i < this.heap.length) {
+        if (
+          2 * i + 1 < this.heap.length &&
+          this.heap[2 * i + 1] < this.heap[2 * i] &&
+          this.heap[i] > this.heap[2 * i + 1]
+        ) {
+          let tmp = this.heap[i];
+          this.heap[i] = this.heap[2 * i + 1];
+          this.heap[2 * i + 1] = tmp;
+          i = 2 * i + 1;
+        } else if (this.heap[i] > this.heap[2 * i]) {
+          let tmp = this.heap[i];
+          this.heap[i] = this.heap[2 * i];
+          this.heap[2 * i] = tmp;
+          i = 2 * i;
+        } else {
+          break;
+        }
+      }
+      curr--;
+    }
+    return;
+  }
+}
+
+//
+
+class Heap {
+  heap: number[];
+
+  heapify(arr: number[]) {
+    arr.push(arr[0]);
+    this.heap = arr;
+
+    let curr = Math.floor((this.heap.length - 1) / 2);
+    while (curr > 0) {
+      let i = curr;
+
+      while (2 * i < this.heap.length) {
+        if (
+          2 * i + 1 < this.heap.length &&
+          this.heap[2 * i + 1] < this.heap[2 * i] &&
+          this.heap[i] > this.heap[2 * i + 1]
+        ) {
+          let tmp = this.heap[i];
+          this.heap[i] = this.heap[2 * i + 1];
+          this.heap[2 * i + 1] = tmp;
+          i = 2 * i + 1;
+        } else if (this.heap[i] > this.heap[2 * i]) {
+          let tmp = this.heap[i];
+          this.heap[i] = this.heap[2 * i];
+          this.heap[2 * i] = tmp;
+          i = 2 * i;
+        } else {
+          break;
+        }
+      }
+      curr--;
+    }
+    return;
+  }
+}
+
+//
+
+function isAnagram(s: string, t: string) {
+  if (s.length !== t.length) {
+    return false;
+  }
+
+  const countS = {};
+  const countT = {};
+
+  for (let i = 0; i < s.length; i++) {
+    countS[s[i]] = (countS[s[i]] || 0) + 1;
+    countT[t[i]] = (countT[t[i]] || 0) + 1;
+  }
+
+  for (const key in countS) {
+    if (countS[key] !== countT[key]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+//
+
+function groupAnagrams(strs: string[]): string[][] {
+  const map = new Map();
+
+  for (const str of strs) {
+    // We first split all the characters into an array of ["e", "a", "t"]
+    // then we .sort() which sorts them alphabetically. Then we join them
+    // The thing is then all word combinations of those characters will
+    // end up with "a, e ,t"
+
+    const sortedStr = str.split('').sort().join();
+
+    // If our map doesn't yet have that key in it, we store it as a brand new
+    // We say: store an entry with key sortedStr, and initialize an empty array
+    // which we'll use to .push afterwards
+    // NOTE: we also can use an object instead of an array, there's a bit of a difference
+    // in the implementation, and in the end we'll say return Object.values(result);
+
+    if (!map.has(sortedStr)) {
+      map.set(sortedStr, []);
+    }
+
+    // Otherwise, we first get that entry in the map by our key, sortedStr, and
+    // we add our new word in it (the original one) and we'll get something like
+    // we'll get something like "aet": ['eat','tea','ate']
+
+    map.get(sortedStr).push(str);
+  }
+
+  // In the end, we make an array of only the values of the original stored words:
+  // FROM THIS:
+  // "aet": ["eat", "tea", "ate"]
+  // "ant": ["tan", "nat"]
+  // "abt": ["bat"]
+
+  // WE OUTPUT THIS:
+  // [["eat", "tea", "ate"], ["tan", "nat"], ["bat"]]
+
+  return Array.from(map.values());
+}
+
+//
+
+function topKFrequent(nums: number[], k: number): number[] {
+  const map = new Map();
+
+  for (const num of nums) {
+    // If this entry still hasn't been initialized, we make the key as the num and set the
+    // count of the numbers to 0.
+    if (!map.has(num)) {
+      map.set(num, 0);
+    }
+
+    // We first get the count of the val by accessing it with the key
+    // And then we increment it by 1
+    const val = map.get(num) || 0;
+    map.set(num, val + 1);
+  }
+
+  // We get all the entries by creating an array, which will look like
+  // First element is they key and then next to it is the count, but in an array format
+  // [
+  //   [1, 3],
+  //   [3, 1]
+  //   [2, 2],
+  // ]
+
+  const entries = Array.from(map.entries());
+
+  // will sort the array of entries in descending order based on the
+  // frequency values (the second element in each pair). In our case,
+  // 1 would be first, 2 would be the second and 3 would be the last
+  // in terms of how many times it's mentioned
+  // the input was [1,1,1,2,2,3]
+
+  entries.sort((a, b) => b[1] - a[1]);
+
+  // We take only the first k elements, if k is 2 that would be this:
+  // [
+  //   [1, 3],
+  //   [2, 2],
+  // ]
+
+  // .map((entry) => entry[0]) only give us the first element, without the count
+  // and store that in a result, which we then return, pretty cool
+
+  const result = entries.slice(0, k).map((entry) => entry[0]);
+  return result;
+}
+
+//
+
+// MATRIX BFS
+
+let grid = [
+  [0, 0, 0, 0],
+  [1, 1, 0, 0],
+  [0, 0, 0, 1],
+  [0, 1, 0, 0],
+];
+
+let visit = [
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+];
+
+// Count Paths (backtradcking)
+function dfs(grid: number[][], r: number, c: number, visit: number[][]) {
+  const ROWS = grid.length;
+  const COLS = grid[0].length;
+
+  if (
+    r < 0 ||
+    c < 0 ||
+    r === ROWS ||
+    c === COLS ||
+    visit[r][c] === 1 ||
+    grid[r][c] === 1
+  ) {
+    return 0;
+  }
+  if (r === ROWS - 1 && c === COLS - 1) {
+    return 1;
+  }
+
+  visit[r][c] = 1;
+  let count = 0;
+  count += dfs(grid, r + 1, c, visit); // down
+  count += dfs(grid, r - 1, c, visit); // up
+  count += dfs(grid, r, c + 1, visit); // right
+  count += dfs(grid, r, c - 1, visit); // left
+
+  visit[r][c] = 0;
+  return count;
+}
+
+console.log(dfs(grid, 0, 0, visit));
+
+// same algo but with a helper
+
+function countPaths(grid: number[][]) {
+  const ROWS = grid.length;
+  const COLS = grid[0].length;
+
+  function helper(r: number, c: number, visit: Set<string>) {
+    if (
+      Math.min(r, c) < 0 ||
+      r === ROWS ||
+      c === COLS ||
+      visit.has(`${r}-${c}`) ||
+      grid[r][c] === 1
+    ) {
+      return 0;
+    }
+    if (r === ROWS - 1 && c === COLS - 1) {
+      return 1;
+    }
+
+    visit.add(`${r}-${c}`);
+    let count = 0;
+
+    count += helper(r + 1, c, new Set()); // down
+    count += helper(r - 1, c, new Set()); // up
+    count += helper(r, c + 1, new Set()); // right
+    count += helper(r, c - 1, new Set()); // left
+
+    visit.delete(`${r}-${c}`);
+    return count;
+  }
+
+  return helper(0, 0, new Set());
+}
+
+// Binary search, range
+// 153. Find Minimum in Rotated Sorted Array
+
+function findMin(nums: number[]): number {
+  let left = 0;
+  let right = nums.length - 1;
+
+  while (left < right) {
+    const mid = Math.floor((left + right) / 2);
+
+    // Checking if the middle element is greater than the most right element
+    // In normal sorted arrays this can not happen. But since we are working with
+    // rotated arrays it can happen.
+    if (nums[mid] > nums[right]) {
+      // In that case we put the left point to be 1+ of mid
+      // So we continue searching the right part of the array
+      left = mid + 1;
+    } else {
+      // If that's not the case, we put our right pointer to where mid is
+      // And we continue searching the left portion of the array.
+      right = mid;
+    }
+  }
+
+  // In the end, we stop the iterations when our left and right pointers point at
+  // the same index (our wanted most minimum value), in the end we can also return nums[right]
+
+  return nums[left];
+}
+
+function buildAdjacencyList() {
+  let adjList = new Map();
+  let edges = [
+    ['A', 'B'],
+    ['B', 'C'],
+    ['B', 'E'],
+    ['C', 'E'],
+    ['E', 'D'],
+  ];
+
+  for (let edge of edges) {
+    let src = edge[0];
+    let dst = edge[1];
+
+    if (!adjList.has(src)) {
+      adjList.set(src, []);
+    }
+
+    if (!adjList.has(dst)) {
+      adjList.set(dst, []);
+    }
+
+    adjList.get(src).push(dst);
+  }
+
+  return adjList;
+}
+
+//
+// Designing adjacency list graph -> All methods
+
+class AdjacencyListGraph {
+  private adjList: Map<number, number[]>;
+
+  constructor() {
+    this.adjList = new Map<number, number[]>();
+  }
+
+  addEdge(src: number, dst: number): void {
+    if (!this.adjList.has(src)) {
+      this.adjList.set(src, []);
+    }
+
+    if (!this.adjList.has(dst)) {
+      this.adjList.set(dst, []);
+    }
+
+    if (!this.adjList.get(src)!.includes(dst)) {
+      this.adjList.get(src)!.push(dst);
+    }
+  }
+
+  removeEdge(src: number, dst: number): boolean {
+    if (!this.adjList.has(src)) {
+      return false;
+    }
+
+    const neighbors = this.adjList.get(src)!;
+    const index = neighbors.indexOf(dst);
+
+    if (index === -1) {
+      return false;
+    }
+
+    neighbors.splice(index, 1);
+    return true;
+  }
+
+  hasPath(src: number, dst: number): boolean {
+    let visit = new Set<number>();
+    return this.dfs(src, dst, visit);
+  }
+
+  dfs(src: number, dst: number, visit: Set<number>): boolean {
+    if (src === dst) {
+      return true;
+    }
+
+    visit.add(src);
+
+    for (let neighbor of this.adjList.get(src)!) {
+      if (!visit.has(neighbor)) {
+        if (this.dfs(neighbor, dst, visit)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 }
