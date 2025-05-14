@@ -153,6 +153,27 @@ function mergeTwoLists(
 }
 
 //
+// 141. Linked List Cycle
+
+function hasCycle(head: ListNode | null): boolean {
+  let visited = new Set();
+  // We can directly work with head, this is just
+  // A design decision
+  let curr = head;
+
+  while (curr) {
+    if (visited.has(curr)) {
+      return true;
+    }
+
+    visited.add(curr);
+    curr = curr.next;
+  }
+
+  return false;
+}
+
+//
 // Designing a Singly Linked List
 
 class LinkedList {
@@ -754,6 +775,7 @@ function bfs(root: TreeNode | null): void {
   }
 }
 
+//
 // Same as above just return an output: [[1,2], [4,5], [5,6]]
 
 function levelOrder(root: TreeNode | null) {
@@ -786,6 +808,8 @@ function levelOrder(root: TreeNode | null) {
 
   return finalArray;
 }
+
+//
 
 function rightSideView(root: TreeNode) {
   let queue: TreeNode[] = [];
@@ -1291,6 +1315,8 @@ function findMin(nums: number[]): number {
   return nums[left];
 }
 
+//
+
 function buildAdjacencyList() {
   let adjList = new Map();
   let edges = [
@@ -1379,6 +1405,531 @@ class AdjacencyListGraph {
       }
     }
 
+    return false;
+  }
+}
+
+//
+
+const isValidPalindrome = (s: string): boolean => {
+  const cleanInput = s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+  let left = 0;
+  let right = cleanInput.length - 1;
+
+  while (left < right) {
+    if (cleanInput[left] !== cleanInput[right]) {
+      return false;
+    }
+    left++;
+    right--;
+  }
+  return true;
+};
+
+//
+
+class EncodingDecoding {
+  encode(strs: string[]) {
+    if (strs.length === 0) return '';
+    let sizes: number[] = [];
+    let result = '';
+
+    // After execution we'll get: [5, 5, 1] etc...
+    for (let s of strs) {
+      sizes.push(s.length);
+    }
+
+    // result = "5,5,1,"
+    for (let sz of sizes) {
+      result += sz + ',';
+    }
+
+    // After this we add a #, marking the end
+    result += '#';
+
+    // "5,5,1,#helloworld".
+    for (let s of strs) {
+      result += s;
+    }
+
+    return result;
+  }
+
+  decode(str: string) {
+    if (str.length === 0) return [];
+
+    let sizes: number[] = [];
+    let res: string[] = [];
+    let i = 0;
+
+    // 1. Extract the sizes before the # delimiter
+    while (str[i] !== '#') {
+      let cur = '';
+
+      // Read characters until hitting a comma
+      while (str[i] !== ',') {
+        cur += str[i];
+        i++;
+      }
+
+      // Convert the string to a number and store it
+      sizes.push(parseInt(cur));
+      i++; // Skip over the comma
+    }
+
+    // Skip over the # delimiter
+    i++;
+
+    // 2. Extract the original strings using the sizes
+    for (let sz of sizes) {
+      res.push(str.substring(i, sz));
+      i += sz;
+    }
+
+    return res;
+  }
+}
+
+//
+// Example: [1,2,4,6]
+// output[0] = 2 x 4 x 6 = 48
+// output[2] = 1 x 4 x 6 = 24
+// so on...
+
+// An implementation with using devision and not handling
+// Zero number as an edge case
+
+function productExceptSelf(nums: number[]) {
+  let n = nums.length;
+  let output = new Array(n);
+
+  let totalProduct = 1;
+
+  for (let num of nums) {
+    totalProduct *= num;
+  }
+
+  for (let i = 0; i < n; i++) {
+    output[i] = totalProduct / nums[i];
+  }
+
+  return output;
+}
+
+//
+// Initial array: [1, 2, 4, 6]
+function productExceptSelfSuffixs(nums: number[]) {
+  let n = nums.length;
+  let output = new Array(n);
+
+  // Left-to-right
+  // i=0: output[0] = 1, then leftProduct = 1×1 = 1
+  // i=1: output[1] = 1, then leftProduct = 1×2 = 2
+  // i=2: output[2] = 2, then leftProduct = 2×4 = 8
+  // i=3: output[3] = 8, then leftProduct = 8×6 = 48
+
+  let leftProduct = 1;
+  for (let i = 0; i < n; i++) {
+    output[i] = leftProduct;
+    leftProduct *= nums[i];
+  }
+
+  let rightProduct = 1;
+  for (let i = n - 1; i >= 0; i--) {
+    output[i] *= rightProduct;
+    rightProduct *= nums[i];
+  }
+
+  return output;
+}
+
+//
+
+function cocoEatingBananas(piles: number[], h: number) {
+  let L = 1;
+  let R = Math.max(...piles);
+  let res = R;
+
+  while (L <= R) {
+    const k = Math.floor((L + R) / 2);
+    let totalTime = 0;
+
+    for (const p of piles) {
+      totalTime += Math.ceil(p / k);
+    }
+
+    if (totalTime <= h) {
+      res = k;
+      R = k - 1;
+    } else {
+      L = k + 1;
+    }
+  }
+
+  return res;
+}
+
+//
+// Search in Rotated Sorted Array
+
+function searchRotatedArray(nums: number[], target: number) {
+  let L = 1;
+  let R = nums.length - 1;
+
+  while (L <= R) {
+    const mid = Math.floor((L + R) / 2);
+
+    if (mid === target) {
+      return mid;
+    }
+
+    // Left sorted portion
+    if (nums[L] <= nums[mid]) {
+      if (target > nums[mid] || target < nums[L]) {
+        L = mid + 1;
+      }
+    } else {
+      if (target < nums[mid] || target > nums[R]) {
+        R = mid - 1;
+      } else {
+        L = mid + 1;
+      }
+    }
+  }
+
+  return -1;
+}
+
+//
+// Invert a Binary Tree
+
+function invertTree(root: TreeNode | null) {
+  if (root === null) {
+    return null;
+  }
+
+  let temp = root.left;
+  root.left = root.right;
+  root.right = temp;
+
+  invertTree(root.right);
+  invertTree(root.left);
+
+  return root;
+}
+
+//
+// Maximum Depth of a Binary Tree
+
+function maxDepth(root: TreeNode | null) {
+  if (root == null) {
+    return 0;
+  }
+
+  let leftDepth = maxDepth(root.left);
+  let rightDepth = maxDepth(root.right);
+
+  return Math.max(leftDepth, rightDepth) + 1;
+}
+
+// Two sum 2 - array is sorted
+//
+
+function twoSum2(numbers: number[], target: number) {
+  let left = 0;
+  let right = numbers.length - 1;
+
+  while (left < right) {
+    let sum = numbers[left] + numbers[right];
+
+    if (sum > target) {
+      right--;
+    } else if (sum < target) {
+      left++;
+    } else {
+      return [left + 1, right + 1];
+    }
+  }
+}
+
+//
+// 3Sum
+
+function threeSum(nums: number[]) {
+  nums.sort((a, b) => a - b);
+  const res: number[][] = [];
+
+  for (let i = 0; i < nums.length; i++) {
+    if (nums[i] > 0) break;
+    if (i > 0 && nums[i] === nums[i - 1]) continue;
+
+    let left = i + 1;
+    let right = nums.length - 1;
+    while (left < right) {
+      const sum = nums[i] + nums[left] + nums[right];
+
+      if (sum > 0) {
+        right--;
+      } else if (sum < 0) {
+        left++;
+      } else {
+        res.push([nums[i], nums[left], nums[right]]);
+        left++;
+        right--;
+        while (left < right && nums[left] === nums[left - 1]) {
+          left++;
+        }
+      }
+    }
+    return res;
+  }
+}
+
+//
+// Reorder Linked List
+
+function reorderList(head: ListNode | null) {
+  if (!head || !head.next) {
+    return;
+  }
+
+  let curr: ListNode | null = head;
+  let length: number = 0;
+
+  while (curr) {
+    length++;
+    curr = curr.next;
+  }
+
+  let middlePosition = Math.floor(length / 2);
+  let middleNode: ListNode = head;
+
+  for (let i = 0; i < middlePosition; i++) {
+    if (middleNode && middleNode.next) {
+      middleNode = middleNode.next;
+    }
+  }
+
+  let firstHalf = head;
+  let secondHalf = middleNode.next;
+  middleNode.next = null;
+
+  // Reversing second half
+  let prev: ListNode | null = null;
+  let current = secondHalf;
+  let next: ListNode | null = null;
+
+  // [4, 5, 6]
+  // [4, 5, 6]
+  while (current) {
+    next = current.next;
+    current.next = prev; // reversing
+    prev = current;
+    current = next;
+  }
+
+  secondHalf = prev;
+
+  // Pointer 1 and two
+  let p1: ListNode | null = firstHalf;
+  let p2: ListNode | null = secondHalf;
+  let temp1: ListNode | null;
+  let temp2: ListNode | null;
+
+  while (p1 && p2) {
+    temp1 = p1.next;
+    temp2 = p2.next;
+
+    // Connect p1 to p2
+    p1.next = p2;
+
+    if (temp1) {
+      p2.next = temp1;
+    }
+
+    p1 = temp1;
+    p2 = temp2;
+  }
+}
+
+//
+// Binary Tree Diameter
+
+class DiameterTree {
+  diameterOfBinaryTree(root: TreeNode | null) {
+    let res = [0];
+    this.dfs(root, res);
+    // Why use res[0] instead of a simple variable?
+    // - Because of how javascript handles primitive values, if we'll use a simple variable
+    // - Passing that state into the recursive funciton would lead for it to be sent as a value
+    // - but passing it as an array (object) would pass it as a reference, maintaining a persistant state of res
+    return res[0];
+  }
+
+  dfs(root: TreeNode | null, res: number[]) {
+    if (root === null) {
+      return 0;
+    }
+
+    let left = this.dfs(root.left, res);
+    let right = this.dfs(root.right, res);
+
+    res[0] = Math.max(res[0], left + right);
+    return 1 + Math.max(left, right);
+  }
+}
+
+//
+// isTreeBalanced
+
+class IsTreeBalanced {
+  isBalanced(root: TreeNode) {
+    return this.checkHeight(root) != -1;
+  }
+
+  checkHeight(root: TreeNode | null) {
+    if (root === null) {
+      return 0;
+    }
+
+    let leftHeight = this.checkHeight(root.left);
+    if (leftHeight == -1) {
+      return -1;
+    }
+
+    let rightHeight = this.checkHeight(root.right);
+    if (rightHeight == -1) {
+      return -1;
+    }
+
+    // Math.abs() is used to get the absolute value of a number - which is the positive
+    // magnitude of a number regardless of its sign. It essentially removes the negative
+    // sign if the number is negative, and leaves positive numbers unchanged.
+
+    // If leftHeight = 5 and rightHeight = 3,
+    // then leftHeight - rightHeight = 2, and Math.abs(2) is 2
+
+    // --
+
+    // If leftHeight = 3 and rightHeight = 5,
+    // then leftHeight - rightHeight = -2, and Math.abs(-2) is 2
+
+    let heightDiff = Math.abs(leftHeight - rightHeight);
+
+    if (heightDiff > 1) {
+      return -1;
+    }
+
+    return 1 + Math.max(leftHeight, rightHeight);
+  }
+}
+
+//
+
+function removeNthFromEnd(head: ListNode | null, n: number) {
+  if (head === null) {
+    return null;
+  }
+
+  let curr: ListNode | null = head;
+  let count = 0;
+
+  while (curr) {
+    count++;
+    curr = curr.next;
+  }
+
+  let lastNth = count - n;
+
+  if (lastNth == 0) {
+    return head.next;
+  }
+
+  let current: ListNode | null = head;
+  let position = 0;
+
+  while (position < lastNth - 1 && current !== null) {
+    current = current.next;
+    position++;
+  }
+
+  if (current !== null && current.next !== null) {
+    current.next = current.next.next;
+  }
+
+  return head;
+}
+
+//
+
+function isValidSudoki(board: string[][]) {
+  const cols = new Map();
+  const rows = new Map();
+  const squares = new Map();
+
+  for (let r = 0; r < 9; r++) {
+    for (let c = 0; c < 9; c++) {
+      if (board[r][c] === '.') continue;
+      // Every cell within the same 3×3 square will generate the same squareKey
+      // We also use it to check if that specific number is somewhere around in the
+      // same square, if it is - we return false. It basically acts like a key for
+      // encoding and decoding (in some sense)
+      const squareKey = `${Math.floor(r / 3)},${Math.floor(c / 3)}`;
+
+      if (
+        (rows.get(r) && rows.get(r).has(board[r][c])) ||
+        (cols.get(c) && cols.get(c).has(board[r][c])) ||
+        (squares.get(squareKey) && squares.get(squareKey).has(board[r][c]))
+      ) {
+        return false;
+      }
+
+      // If that row/col/square hasn't been yet initialized, we initialize
+      // An empty set inside it as a value of the hashMap
+      if (!rows.has(r)) rows.set(r, new Set());
+      if (!cols.has(c)) cols.set(c, new Set());
+      if (!squares.has(squareKey)) squares.set(squareKey, new Set());
+
+      rows.get(r).add(board[r][c]);
+      cols.get(c).add(board[r][c]);
+      squares.get(squareKey).add(board[r][c]);
+    }
+  }
+  return true;
+}
+
+//
+
+// Best time to buy and sell stock
+function maxProfit(prices: number[]) {
+  let l = 0;
+  let r = 1;
+  let maxP = 0;
+
+  while (l < prices.length) {
+    if (prices[l] < prices[r]) {
+      let profit = prices[l] - prices[r];
+      maxP = Math.max(maxP, profit);
+    } else {
+      l = r;
+    }
+    r++;
+  }
+  return maxP;
+}
+
+//
+
+function isSameTree(q: TreeNode | null, p: TreeNode | null) {
+  if (!q && !p) {
+    return true;
+  }
+
+  // Recursively call both left and right children of the subtrees.
+  // Backtracking will be handled by the base case, null && null = true
+  if (p && q && p.val === q.val) {
+    return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+  } else {
     return false;
   }
 }
