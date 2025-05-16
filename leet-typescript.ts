@@ -1933,3 +1933,53 @@ function isSameTree(q: TreeNode | null, p: TreeNode | null) {
     return false;
   }
 }
+
+//
+
+function getConcatenation(nums: number[]) {
+  let n = nums.length;
+  let ans = new Array(n * 2);
+
+  for (let i = 0; i < n; i++) {
+    ans[i] = nums[i];
+    ans[i + n] = nums[i];
+  }
+
+  return ans;
+}
+
+//
+
+function hasDuplicate(nums: number[]) {
+  if (!nums) {
+    return false;
+  }
+
+  const nums2 = new Set();
+
+  for (let num of nums) {
+    if (nums2.has(num)) {
+      return true;
+    } else {
+      nums2.add(num);
+    }
+  }
+  return false;
+}
+
+//
+
+function isAnagram2(s: string, t: string) {
+  if (s.length !== t.length) {
+    return false;
+  }
+
+  let sortedS = s.split('').sort().join('');
+  let sortedT = t.split('').sort().join('');
+
+  if (sortedS === sortedT) {
+    return true;
+  }
+
+  return false;
+}
