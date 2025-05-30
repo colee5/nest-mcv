@@ -1983,3 +1983,547 @@ function isAnagram2(s: string, t: string) {
 
   return false;
 }
+
+//
+
+function longestCommonPrefix(strs: string[]) {
+  for (let i = 0; i < strs[0].length; i++) {
+    for (let s of strs) {
+      if (i === s.length || s[i] !== strs[0][i]) {
+        return s.slice(0, i);
+      }
+    }
+  }
+  return strs[0];
+}
+
+//
+
+function majorityElement(nums: number[]) {
+  let counts = new Map();
+
+  for (const num of nums) {
+    counts.set(num, (counts.get(num) || 0) + 1);
+  }
+
+  let maxCount = 0;
+  let maxNumber = null;
+  for (const [num, count] of counts) {
+    if (count > maxCount) {
+      maxCount = count;
+      maxNumber = num;
+    }
+  }
+
+  return maxNumber;
+}
+
+//
+// Design a Hash Set
+
+class MyListNode {
+  key: number;
+  next: MyListNode | null;
+
+  constructor(key: number) {
+    this.key = key;
+    this.next = null;
+  }
+}
+
+class MyHashSet {
+  set: MyListNode[];
+
+  constructor() {
+    this.set = Array.from({ length: 10000 }, () => new MyListNode(0));
+  }
+
+  hash(key: number): number {
+    return key % this.set.length;
+  }
+
+  add(key: number): void {
+    let curr = this.set[this.hash(key)];
+    while (curr.next) {
+      if (curr.next.key === key) {
+        return;
+      }
+      curr = curr.next;
+    }
+    curr.next = new MyListNode(key);
+  }
+
+  remove(key: number): void {
+    let curr = this.set[this.hash(key)];
+    while (curr.next) {
+      if (curr.next.key === key) {
+        curr.next = curr.next.next;
+        return;
+      }
+      curr = curr.next;
+    }
+  }
+
+  contains(key: number): boolean {
+    let curr = this.set[this.hash(key)];
+    while (curr.next) {
+      if (curr.next.key === key) {
+        return true;
+      }
+      curr = curr.next;
+    }
+    return false;
+  }
+}
+
+//
+// Design a Hash Map
+
+class MyHashNode {
+  key: number;
+  value: number;
+  next: MyHashNode | null;
+
+  constructor(key: number, value: any) {
+    this.key = key;
+    this.value = value;
+    this.next = null;
+  }
+}
+
+class MyHashMap {
+  map: (MyHashNode | null)[];
+
+  constructor() {
+    this.map = new Array(16).fill(null);
+  }
+
+  put(key: number, value: number): void {
+    let index = this.hash(key);
+
+    if (this.map[index] === null) {
+      this.map[index] = new MyHashNode(key, value);
+    } else {
+      let current = this.map[index];
+      while (current !== null) {
+        if (current.key === key) {
+          current.value = value;
+          return;
+        }
+        if (current.next === null) break;
+        current = current.next;
+      }
+      current.next = new MyHashNode(key, value);
+    }
+  }
+
+  get(key: number): number {
+    let index = this.hash(key);
+    let current = this.map[index];
+
+    while (current !== null) {
+      if (current.key === key) {
+        return current.value;
+      } else {
+        current = current.next;
+      }
+    }
+    return -1;
+  }
+
+  remove(key: number): void {
+    let index = this.hash(key);
+    let current = this.map[index];
+
+    if (!current) {
+      return;
+    }
+
+    if (current.key === key) {
+      this.map[index] = current.next;
+      return;
+    }
+
+    while (current.next !== null) {
+      if (current.next.key === key) {
+        current.next = current.next.next;
+        return;
+      }
+      current = current.next;
+    }
+  }
+
+  hash(key: number): number {
+    return key % this.map.length;
+  }
+}
+
+//
+// LRU Cache
+
+class LRUCache {
+  capacity: number;
+  lruCache: Map<number, number>;
+
+  constructor(capacity: number) {
+    this.capacity = capacity;
+    this.lruCache = new Map();
+  }
+
+  get(key: number) {
+    if (this.lruCache.has(key)) {
+      const value = this.lruCache.get(key);
+      this.lruCache.delete(key);
+
+      if (value) {
+        this.lruCache.set(key, value);
+      }
+
+      return value;
+    }
+    return -1;
+  }
+
+  put(key: number, value: number) {
+    if (this.lruCache.has(key)) {
+      this.lruCache.delete(key);
+    }
+
+    if (this.lruCache.size >= this.capacity) {
+      const oldestKey = this.lruCache.keys().next().value;
+      this.lruCache.delete(oldestKey);
+    }
+
+    this.lruCache.set(key, value);
+  }
+}
+
+//
+
+function quickSort(arr: number[], s: number, e: number) {
+  // Base case: If subarray has 1 or 0 elements, it's already sorted
+  // Every recursive approach has an edge case!!!!
+
+  if (e - s + 1 <= 1) {
+    return arr;
+  }
+
+  // Rightmost element as a pivot
+  let pivot = arr[e];
+
+  // 'left' pointer tracks the boundary between smaller and larger elements
+  // Everything to the left of 'left' will be < pivot
+  let left = s;
+
+  for (let i = s; i < e; i++) {
+    // If current element is smaller than pivot
+    if (arr[i] < pivot) {
+      // Swap current element to the "smaller elements" section
+      let temporary = arr[left];
+      arr[left] = arr[i];
+      arr[i] = temporary;
+      left++;
+    }
+    // If arr[i] >= pivot, we do nothing - it stays in the "larger elements" section
+  }
+
+  // After the loop, 'left' points to where the pivot should go
+  // Swap pivot from end position to its correct sorted position
+  arr[e] = arr[left]; // Move whatever was at 'left' to the end
+  arr[left] = pivot; // Place pivot in its final position
+
+  quickSort(arr, s, left - 1); // Quick sort left side
+  quickSort(arr, left + 1, e); // Quick sort right side
+
+  return arr;
+}
+
+//
+// Sort an array
+
+class SortArray {
+  sortArray(nums: number[]) {
+    let l = nums[0];
+    let r = nums[nums.length - 1];
+
+    if (l < r) {
+      let m = Math.floor((l + r) / 2);
+      this.sortArray(nums);
+      this.sortArray(nums);
+      this.mergeSort;
+    }
+  }
+
+  mergeSort(nums: number[], l: number, r: number) {}
+}
+
+//
+// Given a matrix, we first calculate all of the sums, going from left to right
+// and then to below, going from left to right again, with i being the row num
+// and j being the col
+
+class NumMatrix {
+  prefixSum: number[][];
+  constructor(matrix: number[][]) {
+    const rows = matrix.length;
+    const cols = matrix[0].length;
+
+    // empty 2D array filled with 0 values at first, below we gradually start
+    // to fill it up, BUT with the new calculated sum values to the given prefix
+    this.prefixSum = Array(rows)
+      .fill(null)
+      .map(() => Array(cols).fill(0));
+
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < cols; j++) {
+        this.prefixSum[i][j] =
+          matrix[i][j] +
+          // add above
+          (i > 0 ? this.prefixSum[i - 1][j] : 0) +
+          // add left
+          (j > 0 ? this.prefixSum[i][j - 1] : 0) -
+          // remove the overlap in the top left, because we
+          // Calculated it twice
+          (i > 0 && j > 0 ? this.prefixSum[i - 1][j - 1] : 0);
+      }
+    }
+  }
+
+  sumRegion(row1: number, col1: number, row2: number, col2: number): number {
+    // Start with the biggest rectangle (bottom right corner)
+    let result = this.prefixSum[row2][col2];
+
+    // remove the above
+    if (row1 > 0) {
+      result -= this.prefixSum[row1 - 1][col2];
+    }
+
+    // remove the left
+    if (col1 > 0) {
+      result -= this.prefixSum[row2][col1 - 1];
+    }
+
+    // Add back the top left above corner
+    if (row1 > 0 && col1 > 0) {
+      result += this.prefixSum[row1 - 1][col1 - 1];
+    }
+
+    return result;
+  }
+}
+
+//
+// Similar from above, but with a slightly different implementation
+
+class NumMatrix2 {
+  sumMat: number[][];
+  x;
+  constructor(matrix: number[][]) {
+    const ROWS = matrix.length;
+    const COLS = matrix[0].length;
+
+    this.sumMat = Array.from({ length: ROWS + 1 }, () =>
+      Array(COLS + 1).fill(0),
+    );
+
+    for (let r = 0; r < ROWS; r++) {
+      let prefix = 0;
+      for (let c = 0; c < COLS; c++) {
+        prefix += matrix[r][c];
+        const above = this.sumMat[r][c + 1];
+        this.sumMat[r + 1][c + 1] = prefix + above;
+      }
+    }
+  }
+
+  sumRegion(row1: number, col1: number, row2: number, col2: number) {
+    row1++;
+    col1++;
+    row2++;
+    col2++;
+
+    const bottomRight = this.sumMat[row2][col2];
+    const above = this.sumMat[row1 - 1][col2];
+    const left = this.sumMat[row2][col1 - 1];
+    const topLeft = this.sumMat[row1 - 1][col1 - 1];
+    return bottomRight - above - left + topLeft;
+  }
+}
+
+//
+// Longest consecutive sentence
+
+function longestConsecutive(nums: number[]) {
+  // Handle edge case: empty array
+  if (nums.length === 0) return 0;
+
+  let set = new Set<number>();
+  let maxLength = 0;
+
+  // First we add to a set for O(1) lookups
+  for (let i = 0; i < nums.length; i++) {
+    set.add(nums[i]);
+  }
+
+  // Second pass: Find starting points and count consecutive sequences
+  for (let num of set) {
+    // Check if this number is the start of a consecutive sequence
+    // A number is a starting point if (num - 1) doesn't exist in the set
+    if (!set.has(num - 1)) {
+      let currentLength = 1;
+      let currentNum = num;
+
+      // Count consecutive numbers going forward from the starting point
+      // Keep incrementing while the next consecutive number exists
+      while (set.has(currentNum + 1)) {
+        currentLength++;
+        currentNum++;
+      }
+
+      // If current sequence is longer than the previous, update
+      // the upper maxLength (the one which we'll return)
+      maxLength = Math.max(maxLength, currentLength);
+    }
+  }
+  return maxLength;
+}
+
+//
+// Best time to buy and sell stock 2
+function maxProfit2(prices: number[]) {
+  let profit = 0;
+
+  for (let i = 1; i < prices.length; i++) {
+    if (prices[i] > prices[i - 1]) {
+      profit += prices[i] - prices[i - 1];
+    }
+  }
+
+  return profit;
+}
+
+//
+
+function reverseString(s: string[]) {
+  let L = 0;
+  let R = s.length - 1;
+
+  while (L <= R) {
+    let temp = s[L];
+    s[L] = s[R];
+    s[R] = temp;
+    L++;
+    R--;
+  }
+}
+
+//
+
+class isValidPalindrome2 {
+  validPalindrome(s: string) {
+    const cleanInput = s.replace(/[^a-zA-Z0-9]/g, '').toLocaleLowerCase();
+    let L = 0;
+    let R = cleanInput.length - 1;
+
+    while (L <= R) {
+      if (cleanInput[L] !== cleanInput[R]) {
+        return (
+          this.isPalindromRange(cleanInput, L + 1, R) ||
+          this.isPalindromRange(cleanInput, L, R - 1)
+        );
+      }
+      L++;
+      R--;
+    }
+    return true;
+  }
+
+  isPalindromRange(str: string, left: number, right: number) {
+    while (left <= right) {
+      if (str[left] !== str[right]) {
+        return false;
+      }
+      left++;
+      right--;
+    }
+    return true;
+  }
+}
+
+//
+// You are given two strings, word1 and word2. Construct a new string by
+// merging them in alternating order, starting with word1 — take one
+// character from word1, then one from word2, and repeat this process.
+
+function mergeAlternately(word1: string, word2: string) {
+  let n = word1.length;
+  let m = word2.length;
+
+  let finalString: string[] = [];
+
+  let L = 0;
+  let R = 0;
+
+  while (L < n || R < m) {
+    finalString.push(word1[L++]);
+    finalString.push(word2[R++]);
+  }
+
+  return finalString.join('');
+}
+
+//
+// Container With Most Water
+// 1. Brute Force
+
+function maxArea(height: number[]) {
+  let res = 0;
+  for (let l = 0; l < height.length; l++) {
+    for (let r = l + 1; r < height.length; r++) {
+      let area = (r - l) * Math.min(height[l], height[r]);
+      res = Math.max(res, area);
+    }
+  }
+  return res;
+}
+
+// 2. Linear time O(n)
+function maxArea2(height: number[]) {
+  let res = 0;
+  let L = 0;
+  let R = height.length - 1;
+
+  while (L <= R) {
+    let area = (R - L) * Math.min(height[L], height[R]);
+    res = Math.max(res, area);
+
+    if (height[L] < height[R]) {
+      L++;
+    } else {
+      R--;
+    }
+  }
+
+  return res;
+}
+
+//
+// Merge sorted Arrays
+
+function mergeArrays(nums1: number[], m: number, nums2: number[], n: number) {
+  let last = m + n - 1;
+  let i = m - 1;
+  let j = n - 1;
+
+  while (j >= 0) {
+    if (i > 0 && nums1[i] > nums2[j]) {
+      nums1[last] = nums1[i];
+      i = i - 1;
+      last = last - 1;
+    } else {
+      nums1[last] = nums2[j];
+      j = j - 1;
+      last = last - 1;
+    }
+  }
+}
