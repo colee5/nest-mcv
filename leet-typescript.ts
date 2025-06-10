@@ -1,3 +1,5 @@
+import { Deque } from '@datastructures-js/deque';
+
 const removeDuplicates = (nums: number[]) => {
   let n = nums.length;
   let l = 0;
@@ -44,11 +46,7 @@ const concatElement = (nums: number[]) => {
 
 const isValid = (s: string): boolean => {
   let stack: string[] = [];
-  const closeToOpen = {
-    ')': '(',
-    ']': '[',
-    '}': '{',
-  };
+  const closeToOpen = { ')': '(', ']': '[', '}': '{' };
 
   for (let c of s) {
     if (closeToOpen[c]) {
@@ -2526,4 +2524,278 @@ function mergeArrays(nums1: number[], m: number, nums2: number[], n: number) {
       last = last - 1;
     }
   }
+}
+
+//
+// Rotate array in-place
+
+class RotateArray {
+  rotate(nums: number[], k: number) {
+    let n = k % nums.length;
+
+    this.reverse(nums, 0, nums.length - 1); // Reverse entire array
+    this.reverse(nums, 0, n - 1); // Reverse first k elements
+    this.reverse(nums, n, nums.length - 1); // Reverse remaining elements
+  }
+
+  reverse(nums: number[], start: number, end: number) {
+    while (start < end) {
+      let temp = nums[start];
+      nums[start] = nums[end];
+      nums[end] = temp;
+      start++;
+      end--;
+    }
+  }
+}
+
+//
+// Rotate array in-place (extra space)
+
+function rotateArray2(nums: number[], k: number) {
+  const n = nums.length;
+  const temp = new Array(n);
+
+  for (let i = 0; i < n; i++) {
+    temp[(i + k) % n] = nums[i];
+  }
+
+  for (let i = 0; i < n; i++) {
+    nums[i] = temp[i];
+  }
+}
+
+//
+// Contains Duplicate 2 - Hash Map
+
+function containsNearbyDuplicate(nums: number[], k: number) {
+  let map = new Map();
+
+  for (let i = 0; i < nums.length; i++) {
+    if (map.has(nums[i]) && i - map.get(nums[i]) <= k) {
+      return true;
+    }
+    map.set(nums[i], i);
+  }
+  return false;
+}
+
+//
+// Longest Substring Without Repeating Characters
+
+function lengthOfLongestSubstringg(s: string) {
+  if (!s) return;
+  let set = new Set();
+  let L = 0;
+  let res = 0;
+
+  for (let R = 0; R < s.length; R++) {
+    while (set.has(s[R])) {
+      set.delete(s[L]);
+      L++;
+    }
+    set.add(s[R]);
+    res = Math.max(res, R - L + 1);
+  }
+
+  return res;
+}
+
+//
+// Longest Repeating Character Replacement
+// input: "XYYX" k = 2
+// explanation: Either replace the 'X's with 'Y's, or replace the 'Y's with 'X's.
+
+function characterReplacement(s: string, k: number) {
+  let count = new Map();
+  let res = 0;
+  let L = 0;
+
+  for (let R = 0; R < s.length; R++) {
+    count.set(s[R], (count.get(s[R]) || 0) + 1);
+
+    while (R - L + 1 - Math.max(...count.values()) > k) {
+      count.set(s[L], count.get(s[L]) - 1);
+      L++;
+    }
+
+    res = Math.max(res, R - L + 1);
+  }
+  return res;
+}
+
+//
+//
+//
+//
+//
+// Permutation in string
+
+class PermutationInString {
+  checkInclusion(s1: string, s2: string) {
+    const n = s1.length;
+    let L = 0;
+
+    for (let R = n; R < s2.length; R++) {
+      const substring = s2.substring(L, R);
+      const sortedString = this.sort(substring);
+      const sortedString1 = this.sort(s1);
+
+      if (sortedString === sortedString1) {
+        return true;
+      }
+
+      L++;
+    }
+    return false;
+  }
+
+  sort(str: string) {
+    return str.split('').sort().join();
+  }
+}
+
+//
+// Approach 2
+
+class PermutationInString2 {
+  checkInclusion(s1: string, s2: string) {
+    const n = s1.length;
+    const sortedS1 = this.sort(s1);
+
+    for (let i = 0; i <= s2.length - n; i++) {
+      const substring = s2.substring(i, i + n);
+
+      if (this.sort(substring) === sortedS1) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  sort(str: string) {
+    return str.split('').sort().join();
+  }
+}
+
+//
+// Deep Copy Linked List with a Random Pointer
+
+class NodeWithRandom {
+  val: number;
+  next: NodeWithRandom | null;
+  random: NodeWithRandom | null;
+
+  constructor(val: number, next = null, random = null) {
+    this.val = val;
+    this.next = next;
+    this.random = random;
+  }
+}
+
+class DeepCopyLinkedList {
+  copyRandomList(head: NodeWithRandom | null) {
+    let map = new Map();
+    map.set(null, null);
+
+    let curr = head;
+    while (curr) {
+      let copy = new NodeWithRandom(curr.val);
+      map.set(curr, copy);
+      curr = curr.next;
+    }
+
+    curr = head;
+    while (curr) {
+      let copy = map.get(curr);
+      copy.next = map.get(curr.next);
+      copy.random = map.get(curr.random);
+      curr = curr.next;
+    }
+
+    return map.get(head);
+  }
+}
+
+//
+//
+
+class SlidingWindowMaximum {
+  maxSlidingWindow(nums: number[], k: number) {
+    const n = nums.length;
+    let res: number[] = [];
+
+    for (let R = k - 1; R < n; R++) {
+      let L = R - k + 1; // Where our sliding window starts (R - K + 1)
+      let maxValue = this.findMax(nums, L, R);
+      res.push(maxValue);
+    }
+
+    return res;
+  }
+
+  findMax(nums: number[], L: number, R: number) {
+    let max = nums[L];
+
+    for (let i = L + 1; i <= R; i++) {
+      if (nums[i] > max) {
+        max = nums[i];
+      }
+    }
+    return max;
+  }
+}
+
+function maxSlidingWindow(nums: number[], k: number) {
+  const n = nums.length;
+  let res: number[] = new Array(n - k + 1);
+  let dequeue = new Deque<number>(); // stores indices!
+  let L = 0; // Left boundary of window
+  let R = 0; // Right boundary of window (current position)
+
+  while (R < n) {
+    // This maintains the monotonic decreasing property. If the current element is larger
+    // than elements at the back of the deque, those smaller elements can never be the
+    // maximum in any future window, so we remove them.
+
+    while (!dequeue.isEmpty() && nums[dequeue.back()] < nums[R]) {
+      dequeue.popBack();
+    }
+    dequeue.pushBack(R);
+
+    // Remove elements outside current window
+    if (dequeue.front() < L) {
+      dequeue.popFront();
+    }
+
+    // Add to result when window is complete
+    if (R + 1 >= k) {
+      res.push(nums[dequeue.front()]);
+      L++;
+    }
+    R++;
+  }
+
+  return res;
+}
+
+//
+// Minimum Size Subarray Sum
+
+function minSubArrayLength(nums: number[], target: number) {
+  let n = nums.length;
+  let sum = 0;
+  let res = Number.MAX_SAFE_INTEGER;
+  let L = 0;
+
+  for (let R = 0; R < n; R++) {
+    sum += nums[R];
+
+    while (sum >= target) {
+      res = Math.min(res, R - L + 1);
+      sum -= nums[L];
+      L++;
+    }
+  }
+  return res === Number.MAX_SAFE_INTEGER ? 0 : res;
 }
