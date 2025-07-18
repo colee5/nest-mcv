@@ -80,6 +80,24 @@ function findMin(nums: number[]): number {
   return nums[left];
 }
 
+function cocoEatingBananasBrute(piles: number[], h: number) {
+  let speed = 1;
+
+  while (true) {
+    let totalTime = 0;
+
+    for (let p of piles) {
+      totalTime += Math.ceil(p / speed);
+    }
+
+    if (totalTime <= h) {
+      return speed;
+    }
+
+    speed++;
+  }
+}
+
 function cocoEatingBananas(piles: number[], h: number) {
   let L = 1;
   let R = Math.max(...piles);
@@ -105,25 +123,27 @@ function cocoEatingBananas(piles: number[], h: number) {
 }
 
 function searchRotatedArray(nums: number[], target: number) {
-  let L = 1;
+  let L = 0;
   let R = nums.length - 1;
 
   while (L <= R) {
     const mid = Math.floor((L + R) / 2);
 
-    if (mid === target) {
+    if (nums[mid] === target) {
       return mid;
     }
 
     if (nums[L] <= nums[mid]) {
-      if (target > nums[mid] || target < nums[L]) {
-        L = mid + 1;
+      if (target >= nums[L] && target < nums[mid]) {
+        R = mid - 1; // Target is in left half
+      } else {
+        L = mid + 1; // Target is in right half
       }
     } else {
-      if (target < nums[mid] || target > nums[R]) {
-        R = mid - 1;
+      if (target > nums[mid] && target <= nums[R]) {
+        L = mid + 1; // Target is in right half
       } else {
-        L = mid + 1;
+        R = mid - 1; // Target is in left half
       }
     }
   }
@@ -139,4 +159,84 @@ function findClosestElements(arr: number[], k: number, x: number) {
 
   const result = arr.slice(0, k);
   return result.sort((a, b) => a - b);
+}
+
+function searchInsert(nums: number[], target: number) {
+  let L = 0;
+  let R = nums.length - 1;
+
+  while (L <= R) {
+    let mid = Math.floor((L + R) / 2);
+
+    if (target > nums[mid]) {
+      L = mid + 1;
+    } else if (target < nums[mid]) {
+      R = mid - 1;
+    } else {
+      return mid;
+    }
+  }
+  return L;
+}
+
+function squareRoot(x: number) {
+  let L = 0;
+  let R = x;
+  let result = 0;
+
+  while (L <= R) {
+    let mid = Math.floor((L + R) / 2);
+
+    if (mid * mid <= x) {
+      L = mid + 1;
+      result = mid;
+    } else if (mid * mid > x) {
+      R = mid - 1;
+    }
+  }
+  return result;
+}
+
+// weights = [1, 2, 3, 4, 5]
+// days = 5
+class CapacityToShipWithinDays {
+  shipWithinDays(weights: number[], days: number) {
+    let L = Math.max(...weights);
+    let R = 0;
+    let res = 0;
+
+    for (let i = 0; i < weights.length; i++) {
+      R += weights[i];
+    }
+
+    while (L <= R) {
+      let mid = Math.floor((L + R) / 2);
+
+      if (this.canShipInDays(weights, mid, days)) {
+        res = mid;
+        R = mid - 1;
+      } else {
+        L = mid + 1;
+      }
+    }
+    return res;
+  }
+
+  canShipInDays(weights: number[], capacity: number, days: number) {
+    let daysUsed = 1;
+    let currentDayWeight = 0;
+
+    for (let weight of weights) {
+      // Try to add this package to current day
+      if (currentDayWeight + weight <= capacity) {
+        // Package fits on current day
+        currentDayWeight += weight;
+      } else {
+        // Package doesn't fit, start new day
+        daysUsed++;
+        currentDayWeight = weight;
+      }
+    }
+    return daysUsed <= days;
+  }
 }

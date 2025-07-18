@@ -138,3 +138,84 @@ class evalRPN {
     }
   }
 }
+
+function asteroidCollision(asteroids: number[]) {
+  let stack: number[] = [];
+
+  for (let a of asteroids) {
+    if (a > 0) {
+      stack.push(a);
+    } else {
+      let survived = true;
+      while (stack.length > 0 && stack[stack.length - 1] > 0) {
+        let top = stack[stack.length - 1];
+
+        // Meaning the incoming asteroid is bigger
+        // than our current top, so we destroy it
+        if (Math.abs(a) > top) {
+          stack.pop();
+          // The current top we have is bigger
+          // than the incoming asteroid, so nothing
+          // happens in our logic, we just break out
+        } else if (Math.abs(a) < top) {
+          survived = false;
+          break;
+          // Meaning they're equal, so both get destroyed
+        } else {
+          stack.pop();
+          survived = false;
+          break;
+        }
+      }
+      if (survived) {
+        stack.push(a);
+      }
+    }
+  }
+  return stack;
+}
+
+function carFleet(target: number, position: number[], speed: number[]) {
+  const pairs: number[][] = [];
+  for (let i = 0; i < position.length; i++) {
+    pairs.push([position[i], speed[i]]);
+  }
+
+  pairs.sort((a, b) => b[0] - a[0]);
+
+  let stack: number[] = [];
+  for (const [p, s] of pairs) {
+    stack.push((target - p) / 2);
+
+    if (
+      stack.length > 2 &&
+      stack[stack.length - 1] <= stack[stack.length - 2]
+    ) {
+      stack.pop();
+    }
+  }
+
+  return stack.length;
+}
+
+function dailyTemperatures(temperatures: number[]) {
+  const n = temperatures.length;
+  const res: number[] = new Array(n).fill(0);
+  const stack: number[][] = []; // Pair: [temp, index]
+
+  for (let i = 0; i < n; i++) {
+    const t = temperatures[i];
+
+    while (stack.length > 0 && t > stack[stack.length - 1][0]) {
+      const popped = stack.pop();
+
+      if (popped) {
+        const [stackT, stackIndex] = popped;
+        res[stackIndex] = i - stackIndex;
+      }
+    }
+    stack.push([t, i]);
+  }
+
+  return res;
+}

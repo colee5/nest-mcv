@@ -116,3 +116,22 @@ class NumMatrix2 {
     return bottomRight - above - left + topLeft;
   }
 }
+
+class climbingStairs {
+  climbStairs(n: number): number {
+    const memo = new Map<number, number>();
+    return this.helper(n, memo);
+  }
+
+  private helper(n: number, memo: Map<number, number>): number {
+    if (n <= 1) {
+      return 1;
+    }
+
+    if (!memo.has(n)) {
+      memo.set(n, this.helper(n - 1, memo) + this.helper(n - 2, memo));
+    }
+
+    return memo.get(n)!;
+  }
+}
