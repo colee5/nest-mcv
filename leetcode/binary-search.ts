@@ -134,16 +134,20 @@ function searchRotatedArray(nums: number[], target: number) {
     }
 
     if (nums[L] <= nums[mid]) {
+      // Left side [L...mid] is properly sorted
       if (target >= nums[L] && target < nums[mid]) {
-        R = mid - 1; // Target is in left half
+        R = mid - 1;
       } else {
-        L = mid + 1; // Target is in right half
+        // Right side [mid...R] may contain the rotation break
+        L = mid + 1;
       }
     } else {
+      // Left side [L...mid] contains the rotation break
       if (target > nums[mid] && target <= nums[R]) {
-        L = mid + 1; // Target is in right half
+        L = mid + 1;
       } else {
-        R = mid - 1; // Target is in left half
+        // Right side [mid...R] is properly sorted
+        R = mid - 1;
       }
     }
   }
@@ -238,5 +242,82 @@ class CapacityToShipWithinDays {
       }
     }
     return daysUsed <= days;
+  }
+}
+
+class TimeMap {
+  private keyStore: Map<string, [string, number][]>;
+
+  constructor() {
+    this.keyStore = new Map<string, [string, number][]>();
+  }
+
+  set(key: string, value: string, timestamp: number) {
+    const stored = this.keyStore.get(key);
+
+    if (!stored) {
+      this.keyStore.set(key, [[value, timestamp]]);
+    } else {
+      stored.push([value, timestamp]);
+    }
+  }
+
+  get(key: string, timestamp: number) {
+    const stored = this.keyStore.get(key);
+
+    if (!stored) return '';
+
+    let L = 0;
+    let R = stored.length - 1;
+    let result = -1;
+
+    while (L <= R) {
+      const mid = Math.floor((L + R) / 2);
+
+      if (stored[mid][1] <= timestamp) {
+        result = mid;
+        L = mid + 1;
+      } else {
+        R = mid;
+      }
+    }
+    return result === -1 ? '' : stored[result][0];
+  }
+}
+
+class SplitArrayLargestSum {
+  splitArray(nums: number[], k: number) {
+    let L = Math.max(...nums);
+    let R = 0;
+    for (let num of nums) {
+      R += num;
+    }
+    let res = R;
+
+    while (L <= R) {
+      let mid = Math.floor((L + R) / 2);
+      if (this.canSplit(mid, nums, k)) {
+        res = mid;
+        R = mid - 1;
+      } else {
+        L = mid + 1;
+      }
+    }
+    return res;
+  }
+
+  canSplit(largest: number, nums: number[], k: number) {
+    let subarray = 0;
+    let currSum = 0;
+
+    for (let n of nums) {
+      currSum += n;
+      if (currSum > largest) {
+        subarray += 1;
+        currSum = n;
+      }
+    }
+
+    return subarray + 1 <= k;
   }
 }

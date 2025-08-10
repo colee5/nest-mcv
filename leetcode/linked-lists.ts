@@ -432,3 +432,102 @@ class DeepCopyLinkedList {
     return map.get(head);
   }
 }
+
+// Proof:
+// Floyd's Tortoise and Hare (Floyd's cycle detection algorithm)
+function findDuplicate(nums: number[]) {
+  let slow = 0;
+  let fast = 0;
+
+  // PHASE 1: Detect if cycle exists using Floyd's algorithm
+  while (true) {
+    slow = nums[slow]; // Move 1 step
+    fast = nums[nums[fast]]; // Move 2 steps
+
+    if (slow === fast) {
+      break;
+    }
+  }
+
+  // PHASE 2: Find cycle start
+  let slow2 = 0;
+  while (true) {
+    slow = nums[slow]; // Continue from meeting point
+    slow2 = nums[slow2]; // Start from index 0 (reset from beginning)
+
+    if (slow === slow2) {
+      return slow; // Duplicate found
+    }
+  }
+}
+
+class MyCircularQueue {
+  private size: number;
+  private count: number;
+  private head: ListNode | null;
+  private tail: ListNode | null;
+
+  constructor(k: number) {
+    this.size = k;
+    this.count = 0;
+    this.head = null;
+    this.tail = null;
+  }
+
+  enQueue(value: number) {
+    if (this.isFull()) {
+      return false;
+    }
+
+    let newNode = new ListNode(value, null);
+
+    if (this.isEmpty()) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      let previousRear = this.tail;
+      previousRear!.next = newNode;
+      this.tail = newNode;
+    }
+
+    this.count++;
+    return true;
+  }
+
+  deQueue() {
+    if (this.isEmpty()) {
+      return false;
+    }
+
+    this.head = this.head!.next;
+    this.count--;
+
+    if (this.isEmpty()) {
+      this.tail = null;
+    }
+
+    return true;
+  }
+
+  Front() {
+    if (this.isEmpty()) {
+      return -1;
+    }
+    return this.head!.val;
+  }
+
+  Rear() {
+    if (this.isEmpty()) {
+      return -1;
+    }
+    return this.tail!.val;
+  }
+
+  isEmpty() {
+    return this.head ? false : true;
+  }
+
+  isFull() {
+    return this.count == this.size;
+  }
+}
