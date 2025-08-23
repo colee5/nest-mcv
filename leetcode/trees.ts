@@ -396,3 +396,74 @@ function isSameTree(q: TreeNode | null, p: TreeNode | null) {
     return false;
   }
 }
+
+class SubtreeOfAnotherTree {
+  isSubtree(root: TreeNode | null, subRoot: TreeNode | null) {
+    if (!subRoot) {
+      return true;
+    }
+
+    if (!root) {
+      return false;
+    }
+
+    if (this.sameTree(root, subRoot)) {
+      return true;
+    }
+
+    return (
+      this.isSubtree(root.left, subRoot) || this.isSubtree(root.right, subRoot)
+    );
+  }
+
+  sameTree(root: TreeNode | null, subRoot: TreeNode | null) {
+    if (!root && !subRoot) {
+      return true;
+    }
+
+    if (root && subRoot && root.val === subRoot.val) {
+      return (
+        this.sameTree(root.left, subRoot.left) &&
+        this.sameTree(root.right, subRoot.right)
+      );
+    }
+
+    return false;
+  }
+}
+
+// LCA While loop iteration
+function lowestCommonAncestor(root: TreeNode, p: TreeNode, q: TreeNode) {
+  let current: TreeNode | null = root;
+
+  while (current) {
+    if (current.val < p.val && current.val < q.val) {
+      current = current.right;
+    } else if (current.val > p.val && current.val > q.val) {
+      current = current.left;
+    } else {
+      return current;
+    }
+  }
+
+  return null;
+}
+
+// LCA Recursion
+function lowestCommonAncestorRecursion(
+  root: TreeNode,
+  p: TreeNode,
+  q: TreeNode,
+) {
+  if (!root || !p || !q) {
+    return null;
+  }
+
+  if (Math.max(p.val, q.val) < root.val) {
+    return this.lowestCommonAncestor(root.left, p, q);
+  } else if (Math.min(p.val, q.val) > root.val) {
+    return this.lowestCommonAncestor(root.right, p, q);
+  } else {
+    return root;
+  }
+}
